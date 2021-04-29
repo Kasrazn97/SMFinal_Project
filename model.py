@@ -13,7 +13,9 @@ class Agent(Country):
         self.country = Country()
         p = np.random.random()
         if p > 0.5:
-            
+            self.gender = 'female'
+        else:
+            self.gender = 'male'
         self.gender
         self.income = self.random.random(self.avg_income, .. ) # should be inherented from the country class - # google std of wage 
         self.ambition = self.random.random() # function of age 
