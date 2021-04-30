@@ -8,22 +8,21 @@ import numpy as np
 import matplotlib.pyplot as plt
 import seaborn as sns
 
-class Agent(Country):
+class Agent():
 
-    def __init__(self):
+    def __init__(self, home_country):
 
-        super().__init__(pos, model)
-        self.country = Country()
+        self.country = countries_dict[home_country]
         p = np.random.random()
         if p > 0.5:
             self.gender = 0 # female
         else:
             self.gender = 1 # male
         self.income = np.random.random(self.country.avg_income, self.country.avg_income*0.1) # should be inherented from the country class - # google std of wage 
-        self.happy =
+        # self.happy = 
         a = np.random.gamma(2,2,self.num_agents)
         self.age = np.floor(a*45/max(a)+25)
-        self.ambition = 1/self.age # function of age 
+        self.ambition = 1/self.age # declines with age
 
     def willingness_to_move(self):
         return np.exp(self.gender*0.2 - self.age + self.ambition) / (np.exp(self.gender*0.2 - self.age + self.ambition)+1) # - self.country.attachment + self.income) # change this 
@@ -35,7 +34,7 @@ class Agent(Country):
     def choose_country(self, countries_dict):
         p = np.array()
         for i, c in enumerate(countries_dict.values()):
-            p[i] = c.gdp + ..
+            p[i] = c.gdp + .. # finish this
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.random()
@@ -43,26 +42,30 @@ class Agent(Country):
         return list(countries_dict.keys())[np.argmax(p_cumsum > 0)-1]
 
     def update_income(self):
-        self.income = np.random.random(self.country.avg_income, self.country.avg_income*0.1)
+        self.income = np.random.random(self.country.avg_income, self.country.avg_income*0.2)
 
     def step(self):
 
         if self.decide_to_move():
-            self.country = countries_dict[self.choose_country()]
+            self.country.num_of_emmigrants += 1 # increase num of emmigrants in home country
+            self.country.population -= 1 # decrease population in home country
+            self.country = countries_dict[self.choose_country()] 
             self.update_income()
+            self.country.population += 1 # increase population in destination country
+            self.country.num_of_immigrants += 1 # increase num of immigrants in destination country
         self.age += 1
 
-
 class Country():
-    """
-    Model class for the Schelling segregation model.
-    """
-    def __init__(self, data): # need a table with all those cols 
+
+    def __init__(self, data): # input is a table with all those columns
 
         self.population = data['pop']
         self.average_income = data['avg_inc']
         self.hdi = data['hdi']
         self.life_exp = data['life_exp']
+        self.num_of_immigrants = 0
+        self.num_of_emmigrants = 0
+        self.name= data['country']
 
         # policies to be defined 
 
@@ -77,22 +80,19 @@ class MigrationModel():
     def __init__(self, N):
 
         self.num_agents = N
-        self.running = True
 
+        self.countries_pop = {} # dictionary of countries and % of overall agents there  
+        
         # Create agents
-        for i in range(self.num_agents):
-            a = Agent(self)
+        for country in list(countries_pop.keys()):
+            for agent in range(countries_pop[country].values()):
+                a = Agent(self, country)
 
         # Create countries
-        for i in range(len(countries_dict)):
-            c = Country(df)
+        countries_dict = {}
+        for country in countries_list:
+            countries_dict[country] = Country(df[df['country'] == country])
 
-    def step(self):
-        """
-        Run one step of the model. If All agents are happy, halt the model.
-        """
-        self.steps += 1 
-        self.
 
 
 # SAVE AND COMMIT 
