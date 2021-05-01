@@ -18,9 +18,9 @@ class Agent():
             self.gender = 0 # female
         else:
             self.gender = 1 # male
-        self.income = np.random.random(self.country.avg_income, self.country.avg_income*0.1) # should be inherented from the country class - # google std of wage 
+        self.income = np.random.normal(self.country.average_income, self.country.average_income*0.1) # should be inherented from the country class - # google std of wage 
         # self.happy = 
-        a = np.random.gamma(2,2,self.num_agents)
+        a = np.random.gamma(2,2, 348) # change this 
         self.age = np.floor(a*45/max(a)+25)
         self.ambition = 1/self.age # declines with age
         self.unmoved = True # has the agent already moved or not? 
