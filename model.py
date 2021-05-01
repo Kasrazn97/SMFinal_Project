@@ -62,11 +62,12 @@ class Country():
 
         self.population = data['pop']
         self.average_income = data['avg_inc']
-        self.hdi = data['hdi']
+        # self.hdi = data['hdi']
         self.life_exp = data['life_exp']
+        self.gdp = data['gdp']
         self.num_of_immigrants = 0
         self.num_of_emmigrants = 0
-        self.name= data['country']
+        self.name = data['country']
 
         # policies to be defined 
 

@@ -1,9 +1,12 @@
+import pandas as pd
+
 from model import *
+# num_agents = N
 
-
-num_agents = N
+data = pd.read_csv('countries_data.xlsx')
 countries_pop = {} # dictionary of countries and number of agents there  
-        
+for country in data.countries:
+    countries_pop[country] = data[data.countries == country]['pop']
 
 # Create dictionary of countries
 countriesdict = {}
