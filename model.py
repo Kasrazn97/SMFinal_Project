@@ -3,14 +3,14 @@
 # from mesa.space import SingleGrid
 # from mesa.datacollection import DataCollector
 
-from mesa import Agent, Model
+# from mesa import Agent, Model
 import numpy as np
-import matplotlib.pyplot as plt
-import seaborn as sns
+# import matplotlib.pyplot as plt
+# import seaborn as sns
 
 class Agent():
 
-    def __init__(self, home_country):
+    def __init__(self, home_country, countries_dict):
 
         self.country = countries_dict[home_country]
         p = np.random.random()
@@ -60,14 +60,14 @@ class Country():
 
     def __init__(self, data): # input is a table with all those columns
 
-        self.population = data['pop']
-        self.average_income = data['avg_inc']
+        self.population = data['pop'].values[0]
+        self.average_income = data['avg_inc'].values[0]
         # self.hdi = data['hdi']
-        self.life_exp = data['life_exp']
-        self.gdp = data['gdp']
+        self.life_exp = data['life_exp'].values[0]
+        self.gdp = data['gdp'].values[0]
         self.num_of_immigrants = 0
         self.num_of_emmigrants = 0
-        self.name = data['country']
+        self.name = data['country'].values[0]
 
         # policies to be defined 
 
