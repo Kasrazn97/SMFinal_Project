@@ -23,6 +23,7 @@ class Agent():
         a = np.random.gamma(2,2,self.num_agents)
         self.age = np.floor(a*45/max(a)+25)
         self.ambition = 1/self.age # declines with age
+        self.unmoved = True # has the agent already moved or not? 
 
     def willingness_to_move(self):
         return np.exp(self.gender*0.2 - self.age + self.ambition) / (np.exp(self.gender*0.2 - self.age + self.ambition)+1) # - self.country.attachment + self.income) # change this 
@@ -34,7 +35,7 @@ class Agent():
     def choose_country(self, countries_dict):
         p = np.array()
         for i, c in enumerate(countries_dict.values()):
-            p[i] = c.gdp + .. # finish this
+            p[i] = np.random.random() # change this
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.random()
@@ -45,14 +46,14 @@ class Agent():
         self.income = np.random.random(self.country.avg_income, self.country.avg_income*0.2)
 
     def step(self):
-
-        if self.decide_to_move():
-            self.country.num_of_emmigrants += 1 # increase num of emmigrants in home country
-            self.country.population -= 1 # decrease population in home country
-            self.country = countries_dict[self.choose_country()] 
-            self.update_income()
-            self.country.population += 1 # increase population in destination country
-            self.country.num_of_immigrants += 1 # increase num of immigrants in destination country
+        if self.unmoved:
+            if self.decide_to_move():
+                self.country.num_of_emmigrants += 1 # increase num of emmigrants in home country
+                self.country.population -= 1 # decrease population in home country
+                self.country = countries_dict[self.choose_country()] 
+                self.update_income()
+                self.country.population += 1 # increase population in destination country
+                self.country.num_of_immigrants += 1 # increase num of immigrants in destination country
         self.age += 1
 
 class Country():
@@ -72,26 +73,8 @@ class Country():
         def attract_brains():
             self.average_income *= 1.1
         
-        def keep_brains():
+        # def keep_brains():
             
-
-class MigrationModel():
-
-    def __init__(self, N):
-
-        self.num_agents = N
-
-        self.countries_pop = {} # dictionary of countries and % of overall agents there  
-        
-        # Create agents
-        for country in list(countries_pop.keys()):
-            for agent in range(countries_pop[country].values()):
-                a = Agent(self, country)
-
-        # Create countries
-        countries_dict = {}
-        for country in countries_list:
-            countries_dict[country] = Country(df[df['country'] == country])
 
 
 
