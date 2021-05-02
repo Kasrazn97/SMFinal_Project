@@ -35,9 +35,10 @@ while epochs < 31:
 
 # countries_dict['Austria'].name
 
-# for c in list(countries_dict.keys()):
-#     print(countries_dict[c].name, countries_dict[c].num_of_immigrants)
+for c in list(countries_dict.keys()):
+    print(countries_dict[c].name, countries_dict[c].num_of_emmigrants)
 
-for a in agentlist[:15]:
-    print(a.step())
+# collect data
+
+
 

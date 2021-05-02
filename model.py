@@ -1,7 +1,7 @@
-# from mesa import Model, Agent # dont use this 
+from mesa import Model, Agent # dont use this 
 # from mesa.time import RandomActivation
 # from mesa.space import SingleGrid
-# from mesa.datacollection import DataCollector
+from mesa.datacollection import DataCollector
 
 # from mesa import Agent, Model
 import numpy as np
@@ -46,7 +46,7 @@ class Agent():
         return list(self.countries_dict.keys())[np.argmax(p_cumsum > 0)-1]
 
     def update_income(self):
-        self.income = np.random.random(self.country.average_income, self.country.average_income*0.2)
+        self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2)
 
     def step(self):
         if self.unmoved:
@@ -80,7 +80,6 @@ class Country():
         
         # def keep_brains():
             
-
 
 
 # SAVE AND COMMIT 
