@@ -4,7 +4,6 @@ from model import *
 # num_agents = N
 
 data = pd.read_excel('countries_data.xlsx')
-data.head()
 
 countries_pop = {} # dictionary of countries and number of agents there  
 for country in data.country:
@@ -22,13 +21,23 @@ countries_dict['Australia'].population
 agentlist = []
 for country in list(countries_pop.keys()):
     for agent in range(countries_pop[country]):
-        a = Agent(home_country=country, countries_dict=countries_dict)
+        a = Agent(country, countries_dict)
         agentlist.append(a)
 
 epochs = 0
 
 while epochs < 31:
-    print(f'Step {epoch} has started')
+    print(f'Step {epochs} has started')
 
     for a in agentlist:
         a.step()
+    epochs +=1
+
+# countries_dict['Austria'].name
+
+# for c in list(countries_dict.keys()):
+#     print(countries_dict[c].name, countries_dict[c].num_of_immigrants)
+
+for a in agentlist[:15]:
+    print(a.step())
+
