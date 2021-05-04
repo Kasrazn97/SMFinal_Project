@@ -27,7 +27,7 @@ class Agent():
         self.unmoved = True # has the agent already moved or not? 
 
     def willingness_to_move(self):
-        return self.gender*self.ambition - self.ambition*self.age/75 + self.ambition 
+        return self.ambition + 0.1*self.gender*self.ambition - self.ambition*self.age/75 + self.country.emmigrants/self.country.population
     
     def decide_to_move(self, thresh=0.3):
         if self.willingness_to_move() > 0:
@@ -75,11 +75,14 @@ class Country():
 
         # policies to be defined 
 
-        def attract_brains():
-            self.average_income *= 1.1
+    def attract_brains():
+        self.average_income *= 1.1
         
         # def keep_brains():
             
+    def grow_population(self):
+        self.population *= 1.0005
+    
 
 
 # SAVE AND COMMIT 
