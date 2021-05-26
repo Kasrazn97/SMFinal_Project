@@ -23,9 +23,9 @@ boot.huber <- function(data, indices, maxit=20) {
   mod <- glm(y ~ gdp + employment + HDI +life_exp, data = data, family = "binomial", maxit=maxit)
   coefficients(mod)}
 
-system.time(migration.boot <- boot(dfm, boot.huber, R=200, maxit=100)) 
+system.time(migration.boot <- boot(dfm, boot.huber, R=100, maxit=100)) 
 migration.boot$t0
-warnings()
+
 dataEllipse(migration.boot$t[,2], migration.boot$t[,3], xlab='gdp’', ylab='employment',
              cex=.3, levels=c(.5, .95, .99), robust=T)
 
@@ -33,3 +33,8 @@ boot.ci(migration.boot, index=2, type=c("norm", "perc", "bca"))
 
 jack.after.boot(migration.boot, index=2, main='(a) income coefficient')
 
+
+model = glm(log(y/(1-y)) ~ log(gdp) + employment + HDI + life_exp, data=df)
+summary(model)
+
+log(df$y/(1-df$y))
