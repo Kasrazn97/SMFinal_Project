@@ -17,6 +17,7 @@ class Agent():
 
         self.id = id
         self.home_country = home_country
+        # self.countries_dict = countries_dict
         self.country = countries_dict[self.home_country]
         p = np.random.random()
         if p > 0.5:
@@ -27,8 +28,9 @@ class Agent():
         # a = np.random.gamma(2,2,348) # change this 
         # self.age = np.random.choice(np.floor(a*45/max(a)+25))
         self.age = int(np.random.uniform(0,30,1))
-        self.ambition = np.random.normal() # declines with age
-        self.unmoved = True 
+        self.ambition = np.random.random() # declines with age
+        self.unmoved = True
+        self.timestep = 0
 
     def willingness_to_move(self):
         return self.ambition + 0.1*self.gender*self.ambition - self.ambition*self.age/30 # TOADD: self.country.emmigrants/self.country.population
@@ -40,18 +42,27 @@ class Agent():
         else:
             return False
 
-    def choose_country(self):
+    def choose_country(self, countries_dict):
         """
-        Returns a chosen country
+        Returns a chosen country among EU countries
         """
+        # destinations = [country for country in list(countries_dict.keys() if c in [list of destinations here])
+        # destinations_dict = {k: v for k,v in countries_dict.items() if k in destinations}
         countries = list(countries_dict.keys())
         p = np.zeros(len(countries_dict))
         for i, c in enumerate(countries_dict.values()):
-            p[i] = c.prob 
+            p[i] = c.prob
+        print( [(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
-        r = np.random.random()
+        r = np.random.uniform(0,1,1)
+        # print(r)
+        # print(p_cumsum - r)
+        # print(np.argmax((p_cumsum - r) > 0)-1)
         country_id = np.argmax((p_cumsum - r) > 0)
+        if country_id == -1:
+            country_id = 0
+        # print(country_id)
         return countries[country_id]
         
     def update_income(self):
@@ -61,17 +72,27 @@ class Agent():
         gender = self.gender*'male'+(1-self.gender)*'female'
         return f'Agent {self.id}, {gender}, {self.age} years old, from {self.home_country}.'
 
-    def step(self):
+    def reporter(self):
+        values = self.timestep, self.id, self.age, self.ambition, self.home_country, self.country._name, self.unmoved, self.willingness_to_move()
+        df = pd.DataFrame(values, index=None).T
+        df.columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move']
+        return df
+
+
+    def step(self, countries_dict):
         if self.unmoved:
             if self.decide_to_move():
                 self.country.num_of_emmigrants += 1 # increase num of emmigrants in home country
                 # self.country.population -= 1 # decrease population in home country
-                self.country = countries_dict[self.choose_country()] 
+                self.country = countries_dict[self.choose_country(countries_dict)] 
                 self.update_income()
                 # self.country.population += 1 # increase population in destination country
                 self.country.num_of_immigrants += 1 # increase num of immigrants in destination country
                 self.unmoved = False
         self.age += 1
+        self.timestep += 1
+
+
 
 ########--------------- if we decide to add network ---------------##########
 # probability for an edge to exist
@@ -90,4 +111,5 @@ class Agent():
 # SAVE AND COMMIT 
 
     
+
 

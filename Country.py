@@ -8,9 +8,9 @@ class Country():
         self.data = data
         # self.population = data['pop'].values
         self.average_income = data['gdp'].values
-        self.life_exp = data['life_exp'].values
-        self.hdi = data['HDI'].values
-        self.employment = data['employment'].values
+        # self.life_exp = data['life_exp'].values
+        # self.hdi = data['HDI'].values
+        # self.employment = data['employment'].values
         self.num_of_immigrants = 0
         self.num_of_emmigrants = 0
         self._name = data['country'].values[0]
@@ -30,14 +30,26 @@ class Country():
         """
         Returns probability for a country to be chosen as a destination at step t
         """
-        betas = np.array([0.005, 0.5, 0.9, 0.8])
-        country_data = self.data.iloc[self.timestep].to_numpy()[1:5] # starting from 2nd column 
-        return np.exp(np.dot(betas,country_data))/(1+np.exp(np.dot(betas,country_data)))
+        betas = np.array([0.005, 0.0023, 0.019, 0.002]) # we will only define them here (they are set, unchangable values)
+        country_data = self.data.iloc[self.timestep].to_numpy()[1:5] # starting from 2nd column get a data array for a particular year 
+        p = np.exp(np.dot(betas,country_data))/(1+np.exp(np.dot(betas,country_data)))
+        # print(p)
+        return p
+
+    def __repr__(self): # print info about agent
+        return f'{self._name}, number of immigrants: {self.num_of_immigrants}, number of emmigrants:{self.num_of_emmigrants}'
+    
+    def reporter(self):
+        values = self.timestep, self._name, self.num_of_immigrants, self.num_of_emmigrants
+        df = pd.DataFrame(values, index=None).T
+        df.columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants']
+        return df
 
     def step(self):
         """ 
         Update everything
         """
+        # if self.name in [list of EU countruies here]:
         self.prob = self.set_country_probability()
         self.timestep += 1
 
