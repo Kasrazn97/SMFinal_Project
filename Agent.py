@@ -52,7 +52,7 @@ class Agent():
         p = np.zeros(len(countries_dict))
         for i, c in enumerate(countries_dict.values()):
             p[i] = c.prob
-        print( [(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
+        # print( [(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)
@@ -68,16 +68,16 @@ class Agent():
     def update_income(self):
         self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2)
 
-    def __repr__(self): # print info about agent
+    def __repr__(self): 
+        """ Print info about agent """
         gender = self.gender*'male'+(1-self.gender)*'female'
         return f'Agent {self.id}, {gender}, {self.age} years old, from {self.home_country}.'
 
     def reporter(self):
-        values = self.timestep, self.id, self.age, self.ambition, self.home_country, self.country._name, self.unmoved, self.willingness_to_move()
-        df = pd.DataFrame(values, index=None).T
-        df.columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move']
+        values = [self.timestep, self.id, self.age, self.ambition, self.home_country, self.country._name, self.unmoved, self.willingness_to_move()]
+        df = pd.DataFrame(columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
+        df.loc[0] = values
         return df
-
 
     def step(self, countries_dict):
         if self.unmoved:

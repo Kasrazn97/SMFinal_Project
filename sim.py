@@ -35,10 +35,10 @@ def load_data(file_path):
 data = load_data('all_data.csv')
         
 model = MigrationModel(data)
-model.run(5)
+model.run()
 model.get_stats()
 model.countries_report
-model.agents_report[:20]
+model.agents_report.head()
 
 model.countries_dict['']
 

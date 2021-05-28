@@ -10,7 +10,6 @@ class Statistics(object):
     """
     def __init__(self):
 
-
     def calculate_average_workers(self, firms):
         dummy_avg_workers = np.sum([firms[firm].num_employees for firm in firms.keys()])
         return dummy_avg_workers / len(firms)
