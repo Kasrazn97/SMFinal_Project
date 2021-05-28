@@ -36,7 +36,7 @@ class Agent():
         return self.ambition + 0.1*self.gender*self.ambition - self.ambition*self.age/30 # TOADD: self.country.emmigrants/self.country.population
         # TODO: calibrate coefficients 
     
-    def decide_to_move(self, thresh=0.3):
+    def decide_to_move(self, thresh=0.1):
         if self.willingness_to_move() > thresh:
             return True
         else:
@@ -44,7 +44,7 @@ class Agent():
 
     def choose_country(self, countries_dict):
         """
-        Returns a chosen country among EU countries
+        Returns a chosen country among ALL countries - THOSE WHO HAVE DATA 
         """
         # destinations = [country for country in list(countries_dict.keys() if c in [list of destinations here])
         # destinations_dict = {k: v for k,v in countries_dict.items() if k in destinations}
@@ -52,7 +52,7 @@ class Agent():
         p = np.zeros(len(countries_dict))
         for i, c in enumerate(countries_dict.values()):
             p[i] = c.prob
-        # print( [(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
+        # print([(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)

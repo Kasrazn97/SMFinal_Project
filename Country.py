@@ -32,14 +32,18 @@ class Country():
         """
         betas = np.array([0.005, 0.0023, 0.019, 0.002]) # we will only define them here (they are set, unchangable values)
         country_data = self.data.iloc[self.timestep].to_numpy()[1:5] # starting from 2nd column get a data array for a particular year 
-        p = np.exp(np.dot(betas,country_data))/(1+np.exp(np.dot(betas,country_data)))
-        # print(p)
+        # country_diff
+        for i in len(country_diff):
+            p = np.exp(np.dot(betas,country_diff.loc[i]))/(1+np.exp(np.dot(betas,country_diff.loc[i])))
+
+        # p = np.exp(np.dot(betas,country_data))/(1+np.exp(np.dot(betas,country_data)))
+        print(p)
         return p
 
     def __repr__(self): # print info about agent
         return f'{self._name}, number of immigrants: {self.num_of_immigrants}, number of emmigrants:{self.num_of_emmigrants}'
     
-    def reporter(self):
+    def reporter(self): # num of emmigrants and immigrants should increase each step
         values = self.timestep, self._name, self.num_of_immigrants, self.num_of_emmigrants
         df = pd.DataFrame(values, index=None).T
         df.columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants']

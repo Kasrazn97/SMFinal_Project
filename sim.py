@@ -35,32 +35,20 @@ def load_data(file_path):
 data = load_data('all_data.csv')
         
 model = MigrationModel(data)
-model.run()
+model.run(5)
 model.get_stats()
-model.countries_report
-model.agents_report.head()
+model.countries_report[model.countries_report['country'] == 'Italy']
+model.agents_report.head(20)
 
-model.countries_dict['']
-
-model.countries_dict['Italy'].reporter()
-agents_report = pd.DataFrame(['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
-
-df_test = pd.DataFrame(columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
-df_test.append(np.array(model.agentlist[0].reporter()).reshape(1,len(model.agentlist[0].reporter()))[0])
-pd.concat(df_test, np.array(list(model.agentlist[0].reporter()))
-
-np.array([3,4,5,]).reshape(1,3)
-pf = model.agentlist[0].reporter()
-pf.columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move']
-df_test.append(pf)
-countries_report
-pd.concat([df_test, pd.DataFrame(model.agentlist[0].reporter()).T], axis=0, ignore_index=True)
-
-vals = 4,5,6
+len(model.agentlist)
+model.agents_report.groupby('step').status.sum()
+model.agents_report.groupby('agent').status.sum()
+model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 
 
 pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
 pd.read_csv('data/Education_index.csv')
+
 
 # countries_dict = {}
 # destinations = ['Austria', 'Germany']

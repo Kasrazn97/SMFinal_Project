@@ -16,8 +16,8 @@ class MigrationModel():
         self.agentlist = []
         self.num_agents = num_agents
         self.epoch = 0
-        self.countries_report = pd.DataFrame(['step', 'country', 'num_of_immigrants', 'num_of_emmigrants'])
-        self.agents_report = pd.DataFrame(['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
+        self.countries_report = pd.DataFrame(columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants'])
+        self.agents_report = pd.DataFrame(columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
 
 
     def create_agents(self):
@@ -40,16 +40,17 @@ class MigrationModel():
         self.create_agents()
 
         while self.epoch < EPOCHS:
-            print(f'Step {self.epoch} has started')
+            print(f'Step {self.epoch+1} has started')
             for c in self.countries_dict.values():
                 c.step()
                 # print(c.reporter())
-                # selaf.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
+                self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
             for a in self.agentlist:
                 a.step(self.countries_dict)
-                print(a.reporter())
-                # self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
+                # print(a.reporter())
+                self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
             self.epoch +=1
+        print("Simulation completed")
 
     def get_stats(self):
         df = pd.DataFrame(columns=['country', 'immigrants', 'emmigrants'])
