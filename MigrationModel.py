@@ -1,10 +1,10 @@
+
 """
 This module loads data and initializes agents and countries.
 """
 import pandas as pd
-import numpy as np
 from Agent import *
-from Country import *
+from Country import Country
 
 class MigrationModel():
 
@@ -29,10 +29,15 @@ class MigrationModel():
     def create_countries(self):
 
         for country in self.data.country.unique():
-            c = Country(self.data) # self.data is dataframe with all info about countries
+            c = Country(self.data, self.num_agents) # self.data is dataframe with all info about countries
             self.countries_dict[country] = c
 
-    def run(self, EPOCHS=30):
+    def run(self, EPOCHS=30, policy=False):
+
+        # if policy == True:
+        #     policy_matrix = np.ones(self.data.shape)
+        #     policy_matrix[data[(data.country == 'Italy')*(data.year > 3)]['gdp'].index, 1] = 1
+        #     self.data = self.data * policy_matrix
 
         self.create_countries()
         self.create_agents()

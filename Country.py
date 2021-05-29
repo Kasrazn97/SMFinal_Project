@@ -1,16 +1,21 @@
+
+"""
+This module defines the attributes and methods of a Country class. Some countries are only 'senders', 
+some are both senders and receivers.
+"""
+
 import pandas as pd
 import numpy as np
 
 from Agent import *
 from MigrationModel import *
 
-class Country(MigrationModel):
+class Country():
 
-    def __init__(self, data): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
+    def __init__(self, data, num_agents): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
         
-        super().__init__(data, num_agents=30)
         self.data_diff = None
-        self.population = self.num_of_agents
+        self.population = num_agents
         self.num_of_immigrants = 0
         self.num_of_emmigrants = 0
         self._name = data['country'].values[0]
@@ -29,7 +34,7 @@ class Country(MigrationModel):
         self.benefits += 1
             
     def grow_population(self):
-        self.population *= 1.0005
+        self.population *= 1.05
 
     def get_data_diff(self):
         """

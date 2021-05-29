@@ -1,4 +1,8 @@
-# from numpy.core.defchararray import array, index
+
+"""
+This module runs the simulation.
+"""
+
 import pandas as pd
 import numpy as np
 # from pandas.core.frame import DataFrame
@@ -6,22 +10,6 @@ import numpy as np
 from Agent import *
 from Country import *
 from MigrationModel import *
-
-# data = pd.read_csv('data/countries_data_1.csv', sep=';', nrows=31)
-# data = data.drop(1)
-# all_data = pd.DataFrame()
-# for country in data.country.unique():
-#     df = pd.DataFrame(np.tile(data[data.country == country], (30,1)))
-#     all_data = all_data.append(df, ignore_index=True)
-# all_data.columns = data.columns
-# all_data['gdp'] = all_data['gdp'].apply(lambda x: np.log(x))
-# all_data.to_csv('all_data.csv', header=True)
-# data = pd.read_csv('all_data.csv').drop('Unnamed: 0', axis=1)
-
-# INITIALIZE POPULATION
-# countries_pop = {} # dictionary of countries and number of agents there
-# for country in data.country.unique():
-#     countries_pop[country] = data[data.country == country]['pop'].values[0]
 
 def load_data(file_path):
     """
@@ -45,9 +33,28 @@ model.agents_report.groupby('step').status.sum()
 model.agents_report.groupby('agent').status.sum()
 model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 
+# data.iloc[:,1:] @ np.ones(data.iloc[:,1:].shape).T
 
 # pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
 # pd.read_csv('data/Education_index.csv')
+
+
+
+# data = pd.read_csv('data/countries_data_1.csv', sep=';', nrows=31)
+# data = data.drop(1)
+# all_data = pd.DataFrame()
+# for country in data.country.unique():
+#     df = pd.DataFrame(np.tile(data[data.country == country], (30,1)))
+#     all_data = all_data.append(df, ignore_index=True)
+# all_data.columns = data.columns
+# all_data['gdp'] = all_data['gdp'].apply(lambda x: np.log(x))
+# all_data.to_csv('all_data.csv', header=True)
+# data = pd.read_csv('all_data.csv').drop('Unnamed: 0', axis=1)
+
+# INITIALIZE POPULATION
+# countries_pop = {} # dictionary of countries and number of agents there
+# for country in data.country.unique():
+#     countries_pop[country] = data[data.country == country]['pop'].values[0]
 
 
 # countries_dict = {}

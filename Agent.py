@@ -1,26 +1,22 @@
-# from mesa import Model, Agent # dont use this 
-# from mesa.datacollection import DataCollector
+
+"""
+This module defines the attributes and methods of an Agent class. Agents are highly-skilled people
+who decide to move or to stay in the home country based on their ambition. 
+"""
+
 import numpy as np
 import pandas as pd
 
 from Country import *
 from MigrationModel import *
 
-# from mesa.time import RandomActivation
-# from mesa.space import SingleGrid
-# from mesa import Agent, Model
-# from networkx import nx
-# import matplotlib.pyplot as plt
-# import seaborn as sns
-# from itertools import combinations # for the network
+class Agent():
 
-class Agent(MigrationModel):
-
-    def __init__(self, id, home_country): # home_country STRING, countries_dict DICT
+    def __init__(self, id, home_country, countries_dict): # home_country STRING, countries_dict DICT
 
         self.id = id
         self.home_country = home_country
-        # self.countries_dict = countries_dict
+        self.countries_dict = countries_dict
         self.country = self.countries_dict[self.home_country]
         p = np.random.random()
         if p > 0.5:
@@ -68,8 +64,8 @@ class Agent(MigrationModel):
         # print(country_id)
         return countries[country_id]
         
-    def update_income(self):
-        self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2)
+    # def update_income(self):
+    #     self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2)
 
     def __repr__(self): 
         """ Print info about agent """
