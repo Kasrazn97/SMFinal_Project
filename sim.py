@@ -1,7 +1,7 @@
-from numpy.core.defchararray import array, index
+# from numpy.core.defchararray import array, index
 import pandas as pd
 import numpy as np
-from pandas.core.frame import DataFrame
+# from pandas.core.frame import DataFrame
 
 from Agent import *
 from Country import *
@@ -46,8 +46,8 @@ model.agents_report.groupby('agent').status.sum()
 model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 
 
-pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
-pd.read_csv('data/Education_index.csv')
+# pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
+# pd.read_csv('data/Education_index.csv')
 
 
 # countries_dict = {}

@@ -1,17 +1,16 @@
 import pandas as pd
 import numpy as np
 
+from Agent import *
+from MigrationModel import *
+
 class Country(MigrationModel):
 
     def __init__(self, data): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
-
-        # self.data = data # 
+        
+        super().__init__(data, num_agents=30)
         self.data_diff = None
         self.population = self.num_of_agents
-        # self.average_income = data['gdp'].values
-        # self.life_exp = data['life_exp'].values
-        # self.hdi = data['HDI'].values
-        # self.employment = data['employment'].values
         self.num_of_immigrants = 0
         self.num_of_emmigrants = 0
         self._name = data['country'].values[0]

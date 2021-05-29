@@ -3,7 +3,6 @@ This module loads data and initializes agents and countries.
 """
 import pandas as pd
 import numpy as np
-
 from Agent import *
 from Country import *
 
@@ -30,7 +29,7 @@ class MigrationModel():
     def create_countries(self):
 
         for country in self.data.country.unique():
-            c = Country(self.data, self.num_agents) # self.data is dataframe with all info about countries
+            c = Country(self.data) # self.data is dataframe with all info about countries
             self.countries_dict[country] = c
 
     def run(self, EPOCHS=30):
@@ -57,11 +56,3 @@ class MigrationModel():
             df.loc[i] = [self.countries_dict[c]._name, self.countries_dict[c].num_of_immigrants, self.countries_dict[c].num_of_emmigrants]
         return df
             # print(self.countries_dict[c]._name, self.countries_dict[c].num_of_immigrants)
-
-
-
-    # self.datacollector = DataCollector(model_reporters={"County Population": lambda m1: list(m1.county_population_list),
-    #                                                     "County Influx": lambda m2: list(m2.county_flux),
-    #                                                     "Deaths": lambda m3: m3.deaths,
-    #                                                     "Births": lambda m4: m4.births,
-    #                                                     "Total Population": lambda m5: m5.num_agents})
