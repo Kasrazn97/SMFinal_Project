@@ -16,9 +16,8 @@ class MigrationModel():
         self.agentlist = []
         self.num_agents = num_agents
         self.epoch = 0
-        self.countries_report = pd.DataFrame(columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants'])
+        self.countries_report = pd.DataFrame(columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants', 'population'])
         self.agents_report = pd.DataFrame(columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
-
 
     def create_agents(self):
         k = 0
@@ -31,7 +30,7 @@ class MigrationModel():
     def create_countries(self):
 
         for country in self.data.country.unique():
-            c = Country(self.data[self.data['country'] == country]) # df is dataframe with all info about countries
+            c = Country(self.data, self.num_agents) # self.data is dataframe with all info about countries
             self.countries_dict[country] = c
 
     def run(self, EPOCHS=30):

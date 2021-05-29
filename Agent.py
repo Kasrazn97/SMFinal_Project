@@ -11,14 +11,14 @@ import pandas as pd
 # import seaborn as sns
 # from itertools import combinations # for the network
 
-class Agent():
+class Agent(MigrationModel):
 
-    def __init__(self, id, home_country, countries_dict): # home_country STRING, countries_dict DICT
+    def __init__(self, id, home_country): # home_country STRING, countries_dict DICT
 
         self.id = id
         self.home_country = home_country
         # self.countries_dict = countries_dict
-        self.country = countries_dict[self.home_country]
+        self.country = self.countries_dict[self.home_country]
         p = np.random.random()
         if p > 0.5:
             self.gender = 0 # female
@@ -42,15 +42,15 @@ class Agent():
         else:
             return False
 
-    def choose_country(self, countries_dict):
+    def choose_country(self):
         """
         Returns a chosen country among ALL countries - THOSE WHO HAVE DATA 
         """
         # destinations = [country for country in list(countries_dict.keys() if c in [list of destinations here])
         # destinations_dict = {k: v for k,v in countries_dict.items() if k in destinations}
-        countries = list(countries_dict.keys())
-        p = np.zeros(len(countries_dict))
-        for i, c in enumerate(countries_dict.values()):
+        countries = list(self.countries_dict.keys())
+        p = np.zeros(len(self.countries_dict))
+        for i, c in enumerate(self.countries_dict.values()):
             p[i] = c.prob
         # print([(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
         p_scaled = p / p.sum()
@@ -79,12 +79,12 @@ class Agent():
         df.loc[0] = values
         return df
 
-    def step(self, countries_dict):
+    def step(self):
         if self.unmoved:
             if self.decide_to_move():
                 self.country.num_of_emmigrants += 1 # increase num of emmigrants in home country
                 # self.country.population -= 1 # decrease population in home country
-                self.country = countries_dict[self.choose_country(countries_dict)] 
+                self.country = self.countries_dict[self.choose_country(self.countries_dict)] 
                 self.update_income()
                 # self.country.population += 1 # increase population in destination country
                 self.country.num_of_immigrants += 1 # increase num of immigrants in destination country
