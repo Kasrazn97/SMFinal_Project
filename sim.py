@@ -5,7 +5,6 @@ This module runs the simulation.
 
 import pandas as pd
 import numpy as np
-# from pandas.core.frame import DataFrame
 
 from Agent import *
 from Country import *
@@ -21,7 +20,13 @@ def load_data(file_path):
     return data
 
 data = load_data('all_data.csv')
-        
+data.drop('y', axis=1, inplace=True)
+# dft = pd.DataFrame()
+# dftr1 = pd.DataFrame(data[data['country'] == 'Germany'].iloc[0, 1:] - data[data['country'] == 'Australia'].iloc[0, 1:]).T
+# dftr2 = pd.DataFrame(data[data['country'] == 'Austria'].iloc[0, 1:] - data[data['country'] == 'Australia'].iloc[0, 1:]).T
+# dft = dft.append(dftr1, ignore_index=True)
+# dft = dft.append(dftr2, ignore_index=True)
+
 model = MigrationModel(data)
 model.run(5)
 model.get_stats()
@@ -33,15 +38,21 @@ model.agents_report.groupby('step').status.sum()
 model.agents_report.groupby('agent').status.sum()
 model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 
+# model.create_countries()
+# model.countries_dict['Australia'].get_data_diff()
+print(len(model.countries_dict['Australia'].prob))
+model.countries_dict['Australia'].data_diff
+model.countries_dict['Australia'].population
+pt = np.array(model.countries_dict['Australia'].prob)
+
 # data.iloc[:,1:] @ np.ones(data.iloc[:,1:].shape).T
 
 # pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
 # pd.read_csv('data/Education_index.csv')
 
-
-
 # data = pd.read_csv('data/countries_data_1.csv', sep=';', nrows=31)
-# data = data.drop(1)
+# data = data.drop_duplicates(subset='country')
+# data = data.reset_index(drop=True)
 # all_data = pd.DataFrame()
 # for country in data.country.unique():
 #     df = pd.DataFrame(np.tile(data[data.country == country], (30,1)))
@@ -50,12 +61,6 @@ model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 # all_data['gdp'] = all_data['gdp'].apply(lambda x: np.log(x))
 # all_data.to_csv('all_data.csv', header=True)
 # data = pd.read_csv('all_data.csv').drop('Unnamed: 0', axis=1)
-
-# INITIALIZE POPULATION
-# countries_pop = {} # dictionary of countries and number of agents there
-# for country in data.country.unique():
-#     countries_pop[country] = data[data.country == country]['pop'].values[0]
-
 
 # countries_dict = {}
 # destinations = ['Austria', 'Germany']

@@ -4,7 +4,7 @@ This module loads data and initializes agents and countries.
 """
 import pandas as pd
 from Agent import *
-from Country import Country
+from Country import *
 
 class MigrationModel():
 
@@ -29,7 +29,7 @@ class MigrationModel():
     def create_countries(self):
 
         for country in self.data.country.unique():
-            c = Country(self.data, self.num_agents) # self.data is dataframe with all info about countries
+            c = Country(self.data, self.num_agents, country) # self.data is dataframe with all info about countries
             self.countries_dict[country] = c
 
     def run(self, EPOCHS=30, policy=False):
@@ -49,7 +49,7 @@ class MigrationModel():
                 # print(c.reporter())
                 self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
             for a in self.agentlist:
-                a.step(self.countries_dict)
+                a.step()
                 # print(a.reporter())
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
             self.epoch +=1

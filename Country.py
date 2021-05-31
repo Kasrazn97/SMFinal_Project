@@ -7,20 +7,20 @@ some are both senders and receivers.
 import pandas as pd
 import numpy as np
 
-from Agent import *
-from MigrationModel import *
+# from Agent import *
 
 class Country():
 
-    def __init__(self, data, num_agents): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
+    def __init__(self, data, num_agents, country_name): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
         
-        self.data_diff = None
+        self.data = data
+        self.data_diff = pd.DataFrame()
         self.population = num_agents
         self.num_of_immigrants = 0
         self.num_of_emmigrants = 0
-        self._name = data['country'].values[0]
+        self._name = country_name
         self.timestep = 0
-        self.prob = 0 # probability of being chosen as a distination
+        self.prob = list() # probability of being chosen as a distination
 
         # policies to be defined 
 
@@ -40,19 +40,30 @@ class Country():
         """
         Returns the differences of all indicators of a given country and of all others
         """
+        self.data_diff = pd.DataFrame()
         data = self.data[self.data['year'] == self.timestep]
-        self.data_diff = data[data['country'] != self._name] - [data['country'] == self._name].values.squeeze()
+        for c in data.country.unique():
+            df = pd.DataFrame(data[data['country'] == c].iloc[0,1:] - data[data['country'] == self._name].iloc[0,1:]).T
+            self.data_diff = self.data_diff.append(df, ignore_index=True)
+        self.data_diff['beta0'] = np.ones(len(self.data_diff))
+        cols = self.data_diff.columns.tolist()
+        cols = cols[-1:] + cols[:-2]
+        self.data_diff = self.data_diff[cols]
 
     def set_country_probability(self): 
         """
         Returns probability for a country to be chosen as a destination at step t
         """
-        betas = np.array([0.005, 0.0023, 0.019, 0.002]) # we will only define them here (they are set, unchangable values)
-        for i in len(self.data_diff):
-            country_data_diff = self.data_diff.loc[i].to_numpy()[1:len(betas)] 
+        self.prob = []
+        betas = np.array([0.005, 0.0023, 0.019, 0.002, 0.002]) # we will only define them here (they are set, unchangable values)
+        for i in range(len(self.data_diff)):
+            country_data_diff = self.data_diff.loc[i].to_numpy() # [1:len(betas)]
+            # print(country_data_diff)
             p = np.exp(np.dot(betas,country_data_diff))/(1+np.exp(np.dot(betas,country_data_diff)))
-        print(p)
-        return p
+            # print(p)
+            # print(self.prob)
+            # print(self.prob.append(p))
+            self.prob.append(p)
 
     def __repr__(self): 
         return f'{self._name}, number of immigrants: {self.num_of_immigrants}, number of emmigrants:{self.num_of_emmigrants}'
@@ -69,7 +80,8 @@ class Country():
         """
         # if self.name in [list of EU countruies here]:
         self.get_data_diff()
-        self.prob = self.set_country_probability()
+        print(self._name, 'got diff')
+        self.set_country_probability()
         self.timestep += 1
         self.grow_population()
 
