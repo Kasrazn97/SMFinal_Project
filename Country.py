@@ -34,7 +34,7 @@ class Country():
         self.benefits += 1
             
     def grow_population(self):
-        self.population *= 1.05
+        self.population += 2
 
     def get_data_diff(self):
         """

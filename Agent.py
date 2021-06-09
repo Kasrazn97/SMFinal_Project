@@ -29,11 +29,15 @@ class Agent():
         self.timestep = 0
 
     def willingness_to_move(self):
-        return self.ambition + 0.01*self.gender*self.ambition - self.ambition*self.age/30 # TOADD: self.country.emmigrants/self.country.population
+        if self.age <= 30:
+            return self.ambition + 0.01*self.gender*self.ambition - self.ambition*self.age/30 # TOADD: self.country.emmigrants/self.country.population
+        else:
+            return 0
         # TODO: calibrate coefficients 
     
     def decide_to_move(self, thresh=0.2):
         p = np.random.random()
+        # print(self.willingness_to_move())
         if self.willingness_to_move() > p:
             return True
         else:
@@ -76,6 +80,7 @@ class Agent():
 
     def step(self):
         if self.unmoved:
+            print(self.willingness_to_move())
             if self.decide_to_move():
                 chosen_country = self.choose_country()
                 if self.country._name != chosen_country:

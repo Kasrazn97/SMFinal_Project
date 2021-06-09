@@ -46,11 +46,9 @@ class MigrationModel():
             print(f'Step {self.epoch+1} has started')
             for c in self.countries_dict.values():
                 c.step()
-                # print(c.reporter())
                 self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
             for a in self.agentlist:
                 a.step()
-                # print(a.reporter())
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
             self.epoch +=1
         print("Simulation completed")
@@ -60,4 +58,3 @@ class MigrationModel():
         for i, c in enumerate(list(self.countries_dict.keys())):
             df.loc[i] = [self.countries_dict[c]._name, self.countries_dict[c].num_of_immigrants, self.countries_dict[c].num_of_emmigrants]
         return df
-            # print(self.countries_dict[c]._name, self.countries_dict[c].num_of_immigrants)
