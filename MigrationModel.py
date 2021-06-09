@@ -3,8 +3,10 @@
 This module loads data and initializes agents and countries.
 """
 import pandas as pd
-from Agent import *
-from Country import Country
+import Agent
+import Country
+# from Agent import *
+# from Country import *
 
 class MigrationModel():
 
