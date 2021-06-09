@@ -7,9 +7,6 @@ who decide to move or to stay in the home country based on their ambition.
 import numpy as np
 import pandas as pd
 
-from Country import *
-from MigrationModel import *
-
 class Agent():
 
     def __init__(self, id, home_country, countries_dict): # home_country STRING, countries_dict DICT
@@ -23,7 +20,7 @@ class Agent():
             self.gender = 0 # female
         else:
             self.gender = 1 # male
-        self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2) # should be inherented from the country class - # google std of wage 
+        # self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2) # should be inherented from the country class - # google std of wage 
         # a = np.random.gamma(2,2,348) # change this 
         # self.age = np.random.choice(np.floor(a*45/max(a)+25))
         self.age = int(np.random.uniform(0,30,1))
@@ -32,11 +29,12 @@ class Agent():
         self.timestep = 0
 
     def willingness_to_move(self):
-        return self.ambition + 0.1*self.gender*self.ambition - self.ambition*self.age/30 # TOADD: self.country.emmigrants/self.country.population
+        return self.ambition + 0.01*self.gender*self.ambition - self.ambition*self.age/30 # TOADD: self.country.emmigrants/self.country.population
         # TODO: calibrate coefficients 
     
-    def decide_to_move(self, thresh=0.1):
-        if self.willingness_to_move() > thresh:
+    def decide_to_move(self, thresh=0.2):
+        p = np.random.random()
+        if self.willingness_to_move() > p:
             return True
         else:
             return False
@@ -48,20 +46,18 @@ class Agent():
         # destinations = [country for country in list(countries_dict.keys() if c in [list of destinations here])
         # destinations_dict = {k: v for k,v in countries_dict.items() if k in destinations}
         countries = list(self.countries_dict.keys())
-        p = np.zeros(len(self.countries_dict))
-        for i, c in enumerate(self.countries_dict.values()):
-            p[i] = c.prob
+        # p = np.zeros(len(self.countries_dict))
+        # for i, c in enumerate(self.countries_dict.values()):
+        #     p[i] = c.prob
         # print([(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
+        # print(self.country._name)
+        p = np.array(self.country.prob)
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)
-        # print(r)
-        # print(p_cumsum - r)
-        # print(np.argmax((p_cumsum - r) > 0)-1)
         country_id = np.argmax((p_cumsum - r) > 0)
         if country_id == -1:
             country_id = 0
-        # print(country_id)
         return countries[country_id]
         
     # def update_income(self):
@@ -81,13 +77,13 @@ class Agent():
     def step(self):
         if self.unmoved:
             if self.decide_to_move():
-                self.country.num_of_emmigrants += 1 # increase num of emmigrants in home country
-                # self.country.population -= 1 # decrease population in home country
-                self.country = self.countries_dict[self.choose_country(self.countries_dict)] 
-                self.update_income()
-                # self.country.population += 1 # increase population in destination country
-                self.country.num_of_immigrants += 1 # increase num of immigrants in destination country
-                self.unmoved = False
+                chosen_country = self.choose_country()
+                if self.country._name != chosen_country:
+                    self.country.num_of_emmigrants += 1 # increase num of emmigrants in home country
+                    self.country = self.countries_dict[chosen_country] 
+                    # self.update_income()
+                    self.country.num_of_immigrants += 1 # increase num of immigrants in destination country
+                    self.unmoved = False
         self.age += 1
         self.timestep += 1
 
