@@ -21,9 +21,9 @@ def load_data(file_path):
     return data
 
 # data = load_data('all_data.csv')
-data = load_data('df_for_final_sim.csv')
 # data.drop('y', axis=1, inplace=True)
-
+data = load_data('df_for_final_sim.csv')
+data.country.nunique()
 
 model = MigrationModel(data)
 model.run(5)
@@ -51,7 +51,6 @@ print(len(model.countries_dict['Togo'].prob))
 # model.countries_dict['Australia'].data_diff
 # model.countries_dict['Australia'].population
 
-# data.iloc[:,1:] @ np.ones(data.iloc[:,1:].shape).T
 
 # pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
 # pd.read_csv('data/Education_index.csv')
@@ -78,6 +77,7 @@ print(len(model.countries_dict['Togo'].prob))
 # destinations = {k: v for k,v in countries_dict.items() if k in destinations_names}
 
 
+## ------------------- MERGING DATA WITH ALL INDICATORS ------------------ ##
 
 co2 = load_data('data/Ok/CO2.csv')
 co2['Country Name'].nunique()
@@ -97,8 +97,6 @@ expHealth['Country Name'].nunique()
 lifeExp = load_data('data/Ok/LifeExpectency.csv')
 lifeExp['Country Name'].nunique()
 
-co2.set_index(['Country Name', 'variable'])
-
 def set_country_index(df):
     df = df.rename({'Country Name': 'country', 'variable':'year'}, axis=1)
     df = df.set_index(['country', 'year'])
@@ -109,27 +107,30 @@ expRD = set_country_index(expRD)
 expEd = set_country_index(expEd)
 expHealth = set_country_index(expHealth)
 lifeExp = set_country_index(lifeExp)
+gdp = set_country_index(GDP)
 
 co2.columns = ['co2']
 expRD.columns = ['expRD']
 expEd.columns = ['expEd']
 expHealth.columns = ['expHealth']
 lifeExp.columns = ['lifeExp']
+gdp.columns = ['gdp']
 
-data = co2.join(expRD).join(expEd).join(expHealth).join(lifeExp)
+data = co2.join(expRD).join(expEd).join(expHealth).join(gdp)
 data = data.reset_index()
 data.columns
-cols = ['country', 'co2', 'expRD', 'expEd', 'expHealth', 'lifeExp', 'year']
+cols = ['country', 'co2', 'expRD', 'expEd', 'expHealth', 'gdp', 'year']
 data = data[cols]
-len(data.year.unique())
-data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(40))})
-data = data[data['year'] != 39]
-data.co2 = data.co2 / 10000
-data.lifeExp =  data.lifeExp / 10
+# len(data.year.unique())
+# data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(40))})
+# data = data[data['year'] != 39]
+# data.co2 = data.co2 / 10000
+# data.lifeExp =  data.lifeExp / 10
 
 data.to_csv('df_for_final_sim.csv') 
 
-
-
 df = load_data('data/all_emigrants_high.csv')
 df.iloc[:, 1:8].interpolate(axis=1, )
+
+data[data['country'] == 'Armenia']['gdp']
+gdp.reset_index()[gdp.reset_index()['country'] == 'Armenia']

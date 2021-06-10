@@ -29,8 +29,9 @@ class Agent():
         self.timestep = 0
 
     def willingness_to_move(self):
+        alpha0, alpha1, alpha2 = 1, 0.01, 1
         if self.age <= 30:
-            return self.ambition + 0.01*self.gender*self.ambition - self.ambition*self.age/30
+            return alpha0*self.ambition + alpha1**self.gender*self.ambition - alpha2*self.ambition*self.age/30
         else:
             return 0
         # TODO: calibrate coefficients 
@@ -45,9 +46,8 @@ class Agent():
 
     def choose_country(self):
         """
-        Returns a chosen country among ALL countries - THOSE WHO HAVE DATA 
+        Returns a chosen country among destination countries 
         """
-        # people can wherever they want, we will only fit the data we have 
         destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
@@ -61,10 +61,10 @@ class Agent():
         # print(self.country._name)
         p = np.array(self.country.prob)
         network_abroad = []
-        for c in destinations:
-            network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/self.countries_dict[c].population
+        for c in destinations: # compute the share of immigrants from my country as a share of all immigrants in the destination country 
+            network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/self.countries_dict[c].num_of_immigrants.values().sum())
         p = p + np.array(network_abroad)
-        p_scaled = p / p.sum() 
+        p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)
         country_id = np.argmax((p_cumsum - r) > 0)

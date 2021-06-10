@@ -16,8 +16,8 @@ class Country():
         self.data = data
         self.data_diff = pd.DataFrame()
         self.population = num_agents
-        self.num_of_immigrants = 0
-        self.num_of_emmigrants = 0
+        self.num_of_immigrants = {k:[] for k in self.data.country}
+        self.num_of_emmigrants = {k:[] for k in self.data.country}
         self._name = country_name
         self.timestep = 0
         self.prob = list() # probability of being chosen as a distination
@@ -43,7 +43,12 @@ class Country():
         """
         self.data_diff = pd.DataFrame()
         data = self.data[self.data['year'] == self.timestep]
-        for c in data.country.unique():
+        destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
+        'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
+        'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
+        'Switzerland', 'United Kingdom', 'United States']
+        for c in destinations:
+        # for c in data.country.unique():
             df = pd.DataFrame(data[data['country'] == c].iloc[0,1:] - data[data['country'] == self._name].iloc[0,1:]).T
             self.data_diff = self.data_diff.append(df, ignore_index=True)
         self.data_diff['beta0'] = np.ones(len(self.data_diff))
@@ -53,14 +58,14 @@ class Country():
 
     def set_country_probability(self): 
         """
-        Returns probability for a country to be chosen as a destination at step t
+        For a given country returns probabilities to go to other countries at step t
         """
         self.prob = []
         betas = np.array([1, 0, 2, 1.5, 0.02, 0.02]) # we will only define them here (they are set, unchangable values)
         for i in range(len(self.data_diff)):
             country_data_diff = self.data_diff.loc[i].to_numpy() # [1:len(betas)]
             # print(country_data_diff)
-            p = np.exp(np.dot(betas,country_data_diff))/(1+np.exp(np.dot(betas,country_data_diff)))
+            p = np.exp(np.dot(betas,country_data_diff))/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
             # print(p)
             # print(self.prob)
             # print(self.prob.append(p))
