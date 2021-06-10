@@ -48,26 +48,29 @@ class Agent():
         Returns a chosen country among ALL countries - THOSE WHO HAVE DATA 
         """
         # people can wherever they want, we will only fit the data we have 
-    #     destinations = ['Australia', 'Austria', 'Canada', 'Switzerland', 'Chile',
-    #    'Germany', 'Denmark', 'Spain', 'Finland', 'Ireland', 'Luxembourg',
-    #    'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Italy',
-    #    'Sweden', 'Russia', 'United Kingdom', 'United States']
+        destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
+        'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
+        'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
+        'Switzerland', 'United Kingdom', 'United States']
     #     destinations_dict = {k: v for k,v in countries_dict.items() if k in destinations}
-        countries = list(self.countries_dict.keys())
+        # countries = list(self.countries_dict.keys())
         # p = np.zeros(len(self.countries_dict))
         # for i, c in enumerate(self.countries_dict.values()):
         #     p[i] = c.prob
         # print([(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
         # print(self.country._name)
         p = np.array(self.country.prob)
-        # p self.country.num_of_emmigrants/self.country.population
+        network_abroad = []
+        for c in destinations:
+            network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/self.countries_dict[c].population
+        p = p + np.array(network_abroad)
         p_scaled = p / p.sum() 
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)
         country_id = np.argmax((p_cumsum - r) > 0)
         if country_id == -1:
             country_id = 0
-        return countries[country_id]
+        return destinations[country_id]
         
     # def update_income(self):
     #     self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2)
@@ -89,10 +92,10 @@ class Agent():
             if self.decide_to_move():
                 chosen_country = self.choose_country()
                 if self.country._name != chosen_country:
-                    self.country.num_of_emmigrants += 1 # increase num of emmigrants in home country
+                    self.country.num_of_emmigrants[self.country._name] += 1 # increase num of emmigrants in home country to a certain country
                     self.country = self.countries_dict[chosen_country] 
                     # self.update_income()
-                    self.country.num_of_immigrants += 1 # increase num of immigrants in destination country
+                    self.country.num_of_immigrants[chosen_country] += 1 # increase num of immigrants in destination country
                     self.unmoved = False
         self.age += 1
         self.timestep += 1

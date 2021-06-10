@@ -56,7 +56,7 @@ class Country():
         Returns probability for a country to be chosen as a destination at step t
         """
         self.prob = []
-        betas = np.array([0.005, 0.02, 0.02, 0.02, 0.02, 0.02]) # we will only define them here (they are set, unchangable values)
+        betas = np.array([1, 0, 2, 1.5, 0.02, 0.02]) # we will only define them here (they are set, unchangable values)
         for i in range(len(self.data_diff)):
             country_data_diff = self.data_diff.loc[i].to_numpy() # [1:len(betas)]
             # print(country_data_diff)
