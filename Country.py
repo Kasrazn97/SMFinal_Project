@@ -16,12 +16,16 @@ class Country():
         self.data = data
         self.data_diff = pd.DataFrame()
         self.population = num_agents
-        self.num_of_immigrants = {k:[] for k in self.data.country}
-        self.num_of_emmigrants = {k:[] for k in self.data.country}
+        self.num_of_immigrants = {k:0 for k in self.data.country}
+        self.num_of_emmigrants = {k:0 for k in self.data.country}
         self._name = country_name
         self.timestep = 0
         self.prob = list() # probability of being chosen as a distination
         self.benefits = 0
+        self.destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
+        'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
+        'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
+        'Switzerland', 'United Kingdom', 'United States']
 
         # policies to be defined 
 
@@ -43,11 +47,7 @@ class Country():
         """
         self.data_diff = pd.DataFrame()
         data = self.data[self.data['year'] == self.timestep]
-        destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
-        'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
-        'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
-        'Switzerland', 'United Kingdom', 'United States']
-        for c in destinations:
+        for c in self.destinations:
         # for c in data.country.unique():
             df = pd.DataFrame(data[data['country'] == c].iloc[0,1:] - data[data['country'] == self._name].iloc[0,1:]).T
             self.data_diff = self.data_diff.append(df, ignore_index=True)
@@ -61,11 +61,20 @@ class Country():
         For a given country returns probabilities to go to other countries at step t
         """
         self.prob = []
-        betas = np.array([1, 0, 2, 1.5, 0.02, 0.02]) # we will only define them here (they are set, unchangable values)
+
+# Intercept    1.679889e-02
+# co2          1.159363e-07
+# expRD        1.323871e-03
+# expEd       -6.152302e-04
+# expHealth   -5.340156e-04
+# gdp         -1.130067e-14
+
+        betas = np.array([1.679889e-02, 1.159363e-07, 1.323871e-03, -6.152302e-04, -5.340156e-04, -1.130067e-14]) # we will only define them here (they are set, unchangable values)
+        # if self._name.isin(self.destinations):
         for i in range(len(self.data_diff)):
             country_data_diff = self.data_diff.loc[i].to_numpy() # [1:len(betas)]
             # print(country_data_diff)
-            p = np.exp(np.dot(betas,country_data_diff))/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
+            p = np.exp(np.dot(betas, country_data_diff))/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
             # print(p)
             # print(self.prob)
             # print(self.prob.append(p))
@@ -84,7 +93,7 @@ class Country():
         """ 
         Update everything
         """
-        # if self.name in [list of EU countruies here]:
+        # if self._name.isin(self.destinations):
         self.get_data_diff()
         print(self._name, 'got diff')
         self.set_country_probability()
