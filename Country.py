@@ -21,6 +21,7 @@ class Country():
         self._name = country_name
         self.timestep = 0
         self.prob = list() # probability of being chosen as a distination
+        self.benefits = 0
 
         # policies to be defined 
 
@@ -47,7 +48,7 @@ class Country():
             self.data_diff = self.data_diff.append(df, ignore_index=True)
         self.data_diff['beta0'] = np.ones(len(self.data_diff))
         cols = self.data_diff.columns.tolist()
-        cols = cols[-1:] + cols[:-2]
+        cols = cols[-1:] + cols[:-2] # add beta0 as the first column
         self.data_diff = self.data_diff[cols]
 
     def set_country_probability(self): 
@@ -55,7 +56,7 @@ class Country():
         Returns probability for a country to be chosen as a destination at step t
         """
         self.prob = []
-        betas = np.array([0.005, 0.0023, 0.019, 0.002, 0.002]) # we will only define them here (they are set, unchangable values)
+        betas = np.array([0.005, 0.02, 0.02, 0.02, 0.02, 0.02]) # we will only define them here (they are set, unchangable values)
         for i in range(len(self.data_diff)):
             country_data_diff = self.data_diff.loc[i].to_numpy() # [1:len(betas)]
             # print(country_data_diff)
@@ -82,6 +83,7 @@ class Country():
         self.get_data_diff()
         print(self._name, 'got diff')
         self.set_country_probability()
+        print(self.prob)
         self.timestep += 1
         self.grow_population()
 

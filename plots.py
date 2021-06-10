@@ -1,5 +1,4 @@
 import matplotlib.pyplot as plt
-import seaborn as sns
 import numpy as np
 
 def get_colors(num_of_colors):

@@ -3,18 +3,10 @@
 This module loads data and initializes agents and countries.
 """
 import pandas as pd
-<<<<<<< HEAD
-import Agent
-import Country
-# from Agent import *
-# from Country import *
-||||||| aa83dd8
-from Agent import *
-from Country import Country
-=======
+# import Agent
+# import Country
 from Agent import *
 from Country import *
->>>>>>> e44c39c2304c8f33a33803e6ae0ce5cae1f01711
 
 class MigrationModel():
 
@@ -23,7 +15,7 @@ class MigrationModel():
         self.data = data
         self.countries_dict = {}
         self.agentlist = []
-        self.num_agents = num_agents
+        self.num_agents = num_agents # in each country
         self.epoch = 0
         self.countries_report = pd.DataFrame(columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants', 'population'])
         self.agents_report = pd.DataFrame(columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
@@ -55,11 +47,11 @@ class MigrationModel():
         while self.epoch < EPOCHS:
             print(f'Step {self.epoch+1} has started')
             for c in self.countries_dict.values():
-                c.step()
                 self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
+                c.step()
             for a in self.agentlist:
-                a.step()
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
+                a.step()
             self.epoch +=1
         print("Simulation completed")
 
