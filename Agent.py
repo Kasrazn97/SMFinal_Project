@@ -30,7 +30,7 @@ class Agent():
 
     def willingness_to_move(self):
         if self.age <= 30:
-            return self.ambition + 0.01*self.gender*self.ambition - self.ambition*self.age/30 # TOADD: self.country.emmigrants/self.country.population
+            return self.ambition + 0.01*self.gender*self.ambition - self.ambition*self.age/30
         else:
             return 0
         # TODO: calibrate coefficients 
@@ -47,8 +47,12 @@ class Agent():
         """
         Returns a chosen country among ALL countries - THOSE WHO HAVE DATA 
         """
-        # destinations = [country for country in list(countries_dict.keys() if c in [list of destinations here])
-        # destinations_dict = {k: v for k,v in countries_dict.items() if k in destinations}
+        # people can wherever they want, we will only fit the data we have 
+    #     destinations = ['Australia', 'Austria', 'Canada', 'Switzerland', 'Chile',
+    #    'Germany', 'Denmark', 'Spain', 'Finland', 'Ireland', 'Luxembourg',
+    #    'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Italy',
+    #    'Sweden', 'Russia', 'United Kingdom', 'United States']
+    #     destinations_dict = {k: v for k,v in countries_dict.items() if k in destinations}
         countries = list(self.countries_dict.keys())
         # p = np.zeros(len(self.countries_dict))
         # for i, c in enumerate(self.countries_dict.values()):
@@ -56,7 +60,8 @@ class Agent():
         # print([(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
         # print(self.country._name)
         p = np.array(self.country.prob)
-        p_scaled = p / p.sum()
+        # p self.country.num_of_emmigrants/self.country.population
+        p_scaled = p / p.sum() 
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)
         country_id = np.argmax((p_cumsum - r) > 0)
@@ -80,7 +85,7 @@ class Agent():
 
     def step(self):
         if self.unmoved:
-            print(self.willingness_to_move())
+            # print(self.willingness_to_move())
             if self.decide_to_move():
                 chosen_country = self.choose_country()
                 if self.country._name != chosen_country:
