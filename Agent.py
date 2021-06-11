@@ -104,6 +104,8 @@ class Agent():
                     self.unmoved = False
         self.age += 1
         self.timestep += 1
+        if self.age > 30:
+            self.country.new_born += 1
 
 
 

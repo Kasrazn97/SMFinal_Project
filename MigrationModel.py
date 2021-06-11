@@ -54,13 +54,13 @@ class MigrationModel():
             print(f'Step {self.epoch+1} has started')
             for c in self.countries_dict.values():
                 c.step()
-                if self.epoch > 0:
-                    for k in range(c.new_born): # add new agents
-                        self.add_agents(c._name)
             for a in self.agentlist:
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
                 a.step()
             for c in self.countries_dict.values():
+                if self.epoch > 0:
+                    for k in range(c.new_born): # add new agents
+                        self.add_agents(c._name)
                 self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
  
             self.epoch +=1
