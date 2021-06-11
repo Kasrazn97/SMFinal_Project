@@ -20,7 +20,7 @@ class MigrationModel():
         self.countries_report = pd.DataFrame(columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants', 'population'])
         self.agents_report = pd.DataFrame(columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
 
-    def create_agents(self):
+    def initialize_agents(self):
         k = 0
         for country in self.data.country.unique():
             for agent in range(self.num_agents):
@@ -28,7 +28,13 @@ class MigrationModel():
                 self.agentlist.append(a)
             k += 1
     
-    def create_countries(self):
+    def add_agents(self, country):
+        
+        a = Agent(self.agentlist[-1:].id+1, country, self.countries_dict)
+        self.agentlist.append(a)
+
+    
+    def initialize_countries(self):
 
         for country in self.data.country.unique():
             c = Country(self.data, self.num_agents, country) # self.data is dataframe with all info about countries
@@ -41,22 +47,27 @@ class MigrationModel():
         #     policy_matrix[data[(data.country == 'Italy')*(data.year > 3)]['gdp'].index, 1] = 1
         #     self.data = self.data * policy_matrix
 
-        self.create_countries()
-        self.create_agents()
+        self.initialize_countries()
+        self.initialize_agents()
 
         while self.epoch < EPOCHS:
             print(f'Step {self.epoch+1} has started')
             for c in self.countries_dict.values():
-                self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
                 c.step()
+                if self.epoch > 0:
+                    for k in range(c.new_born): # add new agents
+                        self.add_agents(c._name)
             for a in self.agentlist:
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
                 a.step()
+            for c in self.countries_dict.values():
+                self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
+ 
             self.epoch +=1
         print("Simulation completed")
 
-    def get_stats(self):
-        df = pd.DataFrame(columns=['country', 'immigrants', 'emmigrants'])
-        for i, c in enumerate(list(self.countries_dict.keys())):
-            df.loc[i] = [self.countries_dict[c]._name, self.countries_dict[c].num_of_immigrants, self.countries_dict[c].num_of_emmigrants]
+    def get_country_stats(self, country):
+        df = self.countries_report[self.countries_report.country == country]
         return df
+    
+

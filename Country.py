@@ -18,6 +18,7 @@ class Country():
         self.population = num_agents
         self.num_of_immigrants = {k:0 for k in self.data.country}
         self.num_of_emmigrants = {k:0 for k in self.data.country}
+        self.new_born = 0 
         self._name = country_name
         self.timestep = 0
         self.prob = list() # probability of being chosen as a distination
@@ -74,7 +75,8 @@ class Country():
         for i in range(len(self.data_diff)):
             country_data_diff = self.data_diff.loc[i].to_numpy() # [1:len(betas)]
             # print(country_data_diff)
-            p = np.exp(np.dot(betas, country_data_diff))/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
+            # p = np.exp(np.dot(betas, country_data_diff))/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
+            p = 1/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
             # print(p)
             # print(self.prob)
             # print(self.prob.append(p))
@@ -84,7 +86,7 @@ class Country():
         return f'{self._name}, number of immigrants: {self.num_of_immigrants}, number of emmigrants:{self.num_of_emmigrants}'
     
     def reporter(self): # num of emmigrants and immigrants should increase each step
-        values = self.timestep, self._name, self.num_of_immigrants, self.num_of_emmigrants, self.population
+        values = self.timestep, self._name, sum(self.num_of_immigrants.values()), sum(self.num_of_emmigrants.values()), self.population
         df = pd.DataFrame(values, index=None).T
         df.columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants', 'population']
         return df
