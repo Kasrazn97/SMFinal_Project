@@ -31,10 +31,10 @@ class Country():
         # policies to be defined 
 
     def improve_indicator(self, indicator): # this is stupid now , needs change 
-        self.data[(self.data['country'] == self._name)*(self.data['year'] == self.timestep)]['indicator'] *= 1.001
+        self.data[(self.data['country'] == self._name)&(self.data['year'] == self.timestep)][indicator] *= 1.01
 
-    def attract_brains(self):
-        self.average_income *= 1.1
+    # def attract_brains(self):
+    #     self.average_income *= 1.1
 
     def keep_brains():
         self.benefits += 1
@@ -47,6 +47,8 @@ class Country():
         Returns the differences of all indicators of a given country and of all others
         """
         self.data_diff = pd.DataFrame()
+        if self.timestep == 4:
+            self.improve_indicator('gdp')
         data = self.data[self.data['year'] == self.timestep]
         for c in self.destinations:
         # for c in data.country.unique():
@@ -72,12 +74,16 @@ class Country():
 
         betas = np.array([1.679889e-02, 1.159363e-07, 1.323871e-03, -6.152302e-04, -5.340156e-04, -1.130067e-14]) # we will only define them here (they are set, unchangable values)
         # if self._name.isin(self.destinations):
+        denominator = 0
         for i in range(len(self.data_diff)):
             country_data_diff = self.data_diff.loc[i].to_numpy() # [1:len(betas)]
-            # print(country_data_diff)
-            # p = np.exp(np.dot(betas, country_data_diff))/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
-            p = 1/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
-            # print(p)
+            denominator += np.exp(np.dot(betas,country_data_diff))
+        for i in range(len(self.data_diff)):
+            country_data_diff = self.data_diff.loc[i].to_numpy() # [1:len(betas)]
+            print(country_data_diff)
+            p = np.exp(np.dot(betas, country_data_diff))/denominator # prob-s to go to other countries
+            # p = 1/(1+np.exp(np.dot(betas,country_data_diff))) # prob-s to go to other countries
+            print(p)
             # print(self.prob)
             # print(self.prob.append(p))
             self.prob.append(p)

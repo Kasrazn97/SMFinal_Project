@@ -67,10 +67,11 @@ class Agent():
             else:
                 network_abroad.append(0)
         # print(len(network_abroad))
-        NAcoef = 0.01
+        NAcoef = 0.1
         p = p + NAcoef*np.array(network_abroad)
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
+        # print('p_cumsum:', p_cumsum)
         r = np.random.uniform(0,1,1)
         country_id = np.argmax((p_cumsum - r) > 0)
         if country_id == -1:
