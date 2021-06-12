@@ -102,5 +102,6 @@ class Country():
         print(self.prob)
         self.timestep += 1
         self.grow_population()
+        self.new_born = 0
 
 

@@ -5,6 +5,7 @@ This module runs the simulation.
 
 import pandas as pd
 import numpy as np
+from sklearn.preprocessing import StandardScaler
 
 from Agent import *
 from Country import *
@@ -19,46 +20,77 @@ def load_data(file_path):
     if data.columns[0] == 'Unnamed: 0':
         data = data.drop('Unnamed: 0', axis=1)
     # change year to timestep
-    # data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(len(data.year)))})
-    # data = data[data['year'] != 39]
-    return data
+    data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(len(data.year)))})
+    data = data[data['year'] != 39]
+    scaler = StandardScaler() # rescale data
+    X = scaler.fit_transform(data.iloc[:,1:6]) # only indicators
+    df = pd.DataFrame(X)
+    df.columns = data.iloc[:,1:6].columns
+    df = pd.concat([data['country'], df, data['year']], axis=1)
+    return df
 
 # data = load_data('all_data.csv')
 # data.drop('y', axis=1, inplace=True)
 data = load_data('df_for_final_sim.csv')
-data.country.nunique()
-data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(40))})
-data = data[data['year'] != 39]
-data.co2 = data.co2 / 10000
-data.gdp = np.log(data.gdp)
+# data.country.nunique()
+# data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(40))})
+# data = data[data['year'] != 39]
+# data.co2 = data.co2 / 10000
+# data.gdp = np.log(data.gdp)
 
 model = MigrationModel(data.dropna())
-model.run(5)
+model.run(20)
 model.get_stats()
 
-# plt.plot(model.countries_report[model.countries_report['country'] == 'Italy'].step, model.countries_report[model.countries_report['country'] == 'Italy'].num_of_immigrants, 
-# "--", lw=0.5, color="black", alpha=0.8)
+## --------------------- PLOTS ------------------------------ ##
 
-from plots import *
-plot_immigration_flow(model.countries_report[model.countries_report.country.isin(model.countries_report.country.unique()[:20])])
+destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
+        # 'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
+        # 'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
+        'Switzerland', 'United Kingdom', 'United States']
+
+plot_immigration_flow(model.countries_report[model.countries_report.country.isin(destinations)])
+
+plt.bar(model.countries_report[model.countries_report.country == 'Germany']['step'], model.countries_report[model.countries_report.country == 'Germany']['num_of_immigrants'])
+
+plot_em_countries = ['Angola', 'Argentina', 'Armenia', 'Azerbaijan', 'Bahrain', 'Belarus',
+       'Bolivia', 'Bosnia and Herzegovina', 'Botswana',
+       'Brazil', 'Brunei Darussalam', 'Bulgaria', 'Burkina Faso',
+       'Burundi', 'Cabo Verde', 'Cambodia']
+
+plot_emmigration_flow(model.countries_report[model.countries_report.country.isin(plot_em_countries)])
 
 
+
+
+
+
+
+## --------------------- CHECKS ------------------------------ ##
+
+model.countries_report[model.countries_report.country == 'Burkina Faso']
 model.countries_report.step.max()+1.5
 model.agents_report.head(30)
-model.countries_report.head()
+model.countries_report.country.unique()[:30]
+model.agents_report.groupby('step').status.sum()
 model.agents_report.groupby('step').status.value_counts()
 model.agents_report.groupby('agent').status.sum()
 model.agents_report.agent.nunique()
 model.agents_report[(model.agents_report.step == 1)&(model.agents_report.status == False)]
 
+model.agents_report[model.agents_report.agent == 4106][-20:]
+
 model.countries_report.groupby('step')['num_of_immigrants'].sum()
 # model.create_countries()
 model.countries_dict['Australia'].get_data_diff()
-model.countries_dict['Zambia'].prob
+model.countries_dict['Albania'].new_born
 print(len(model.countries_dict['Togo'].prob))
 # model.countries_dict['Australia'].data_diff
 # model.countries_dict['Australia'].population
+for c in model.countries_dict.keys():
+    print(model.countries_dict[c].new_born)
 
+model.get_country_stats('Austria')
 
 # pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
 # pd.read_csv('data/Education_index.csv')

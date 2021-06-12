@@ -34,8 +34,6 @@ def plot_immigration_flow(data):
     ax.get_xaxis().tick_bottom()    
     ax.get_yaxis().tick_left()  
 
-    # plt.ylim(0, 350)
-    # plt.xlim(979, 2012)
     plt.title("Immigration flow dynamics of highly educated people", fontsize=17, ha="center") 
 
     colors = get_colors(len(data['country'].unique()))
@@ -47,9 +45,44 @@ def plot_immigration_flow(data):
                     )
             y_pos = data[(data['country']==country)&(data.step == STEPS)]['num_of_immigrants']
             plt.text(x=STEPS, y=y_pos, s = country, fontsize=14, color=colors[i]) 
-                
-    # for y in range(1, df.step, ):    
-    #     plt.plot(range(1980, 2011, 5), np.repeat(y, len(range(1980, 2011, 5))), "--", lw=0.5, color="black", alpha=0.3) 
 
     plt.xticks(size=14)
     plt.yticks(size=14)
+
+def plot_emmigration_flow(data):
+    
+    STEPS = data.step.max()
+
+    plt.style.use("seaborn-dark-palette")
+    plt.figure(figsize=(12, 14))
+
+    ax = plt.subplot(111)    
+    ax.spines["top"].set_visible(False)    
+    ax.spines["bottom"].set_visible(False)    
+    ax.spines["right"].set_visible(False)    
+    ax.spines["left"].set_visible(False)    
+    ax.get_xaxis().tick_bottom()    
+    ax.get_yaxis().tick_left()  
+
+    plt.title("Emmigration flow dynamics of highly educated people", fontsize=17, ha="center") 
+
+    colors = get_colors(len(data['country'].unique()))
+    for i, country in enumerate(data['country'].unique()):
+            plt.plot(np.arange(1, STEPS+1, 1),    
+                    data[data['country'] == country]['num_of_emmigrants'],
+                            lw=2, 
+                    color=colors[i]
+                    )
+            y_pos = data[(data['country']==country)&(data.step == STEPS)]['num_of_emmigrants']
+            plt.text(x=STEPS, y=y_pos, s = country, fontsize=14, color=colors[i]) 
+
+    plt.xticks(size=14)
+    plt.yticks(size=14)
+
+def country_immigrants_hist(self, data):
+        plt.bar(data['step'], data['num_of_emmigrants'])
+        
+
+def country_emmigrants_hist(self, data):
+        plt.bar(data['step'], data['num_of_emmigrants'])
+
