@@ -30,10 +30,10 @@ class MigrationModel():
     
     def add_agents(self, country):
         
-        a = Agent(self.agentlist[-1:].id+1, country, self.countries_dict)
+        a = Agent(self.agentlist[-1:][0].id+1, country, self.countries_dict)
         self.agentlist.append(a)
+        print(f'Agent {a} is added')
 
-    
     def initialize_countries(self):
 
         for country in self.data.country.unique():

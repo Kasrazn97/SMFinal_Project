@@ -5,7 +5,7 @@ This module runs the simulation.
 
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import StandardScaler
+from sklearn.preprocessing import MinMaxScaler
 
 from Agent import *
 from Country import *
@@ -20,33 +20,33 @@ def load_data(file_path):
     if data.columns[0] == 'Unnamed: 0':
         data = data.drop('Unnamed: 0', axis=1)
     # change year to timestep
-    data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(len(data.year)))})
-    data = data[data['year'] != 39]
-    scaler = StandardScaler() # rescale data
-    X = scaler.fit_transform(data.iloc[:,1:6]) # only indicators
-    df = pd.DataFrame(X)
-    df.columns = data.iloc[:,1:6].columns
-    df = pd.concat([data['country'], df, data['year']], axis=1)
-    return df
+    # data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(len(data.year)))})
+    # data = data[data['year'] != 39]
+    # scaler = MinMaxScaler() # rescale data
+    # X = scaler.fit_transform(data.iloc[:,1:6]) # only indicators
+    # df = pd.DataFrame(X)
+    # df.columns = data.iloc[:,1:6].columns
+    # df = pd.concat([data['country'], df, data['year']], axis=1)
+    return data
 
 # data = load_data('all_data.csv')
 # data.drop('y', axis=1, inplace=True)
-data = load_data('df_for_final_sim.csv')
+data = load_data('df_for_final_sim_137unique.csv')
 # data.country.nunique()
 # data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(40))})
 # data = data[data['year'] != 39]
-# data.co2 = data.co2 / 10000
-# data.gdp = np.log(data.gdp)
+data.co2 = data.co2 / 10000
+data.gdp = np.log(data.gdp)
 
 model = MigrationModel(data.dropna())
-model.run(20)
-model.get_stats()
+model.run(2)
+model.get_country_stats('Bulgaria')
 
 ## --------------------- PLOTS ------------------------------ ##
 
 destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
-        # 'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
-        # 'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
+        'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
+        'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
 
 plot_immigration_flow(model.countries_report[model.countries_report.country.isin(destinations)])
@@ -60,13 +60,11 @@ plot_em_countries = ['Angola', 'Argentina', 'Armenia', 'Azerbaijan', 'Bahrain', 
 
 plot_emmigration_flow(model.countries_report[model.countries_report.country.isin(plot_em_countries)])
 
+df1 = model.countries_report
+df1['num_of_immigrants'] = model.countries_report.num_of_immigrants.diff(periods = 137)
+df1['num_of_immigrants'] = df1['num_of_immigrants'].fillna(0)
 
-
-
-
-
-
-## --------------------- CHECKS ------------------------------ ##
+## ------------------------- CHECKS ------------------------------ ##
 
 model.countries_report[model.countries_report.country == 'Burkina Faso']
 model.countries_report.step.max()+1.5
@@ -92,6 +90,7 @@ for c in model.countries_dict.keys():
 
 model.get_country_stats('Austria')
 
+model.agentlist[-1:][0].id
 # pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
 # pd.read_csv('data/Education_index.csv')
 
@@ -161,13 +160,11 @@ data = data.reset_index()
 data.columns
 cols = ['country', 'co2', 'expRD', 'expEd', 'expHealth', 'gdp', 'year']
 data = data[cols]
-# len(data.year.unique())
-# data.lifeExp =  data.lifeExp / 10
 
-data.to_csv('df_for_final_sim.csv') 
+data.dropna().groupby('year').country.nunique()
+data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(40))})
+data = data[data['year'] != 39]
+data.dropna().to_csv('df_for_final_sim_137unique.csv') 
 
 df = load_data('data/all_emigrants_high.csv')
 df.iloc[:, 1:8].interpolate(axis=1, )
-
-data[data['country'] == 'Armenia']['gdp']
-gdp.reset_index()[gdp.reset_index()['country'] == 'Armenia']
