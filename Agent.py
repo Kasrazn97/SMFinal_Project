@@ -62,8 +62,13 @@ class Agent():
         p = np.array(self.country.prob)
         network_abroad = []
         for c in destinations: # compute the share of immigrants from my country as a share of all immigrants in the destination country 
-            network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/self.countries_dict[c].num_of_immigrants.values().sum())
-        p = p + np.array(network_abroad)
+            if sum(self.countries_dict[c].num_of_immigrants.values()) != 0:
+                network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/sum(self.countries_dict[c].num_of_immigrants.values()))
+            else:
+                network_abroad.append(0)
+        # print(len(network_abroad))
+        NAcoef = 0.01
+        p = p + NAcoef*np.array(network_abroad)
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)
