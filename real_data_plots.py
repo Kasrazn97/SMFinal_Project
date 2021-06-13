@@ -1,6 +1,7 @@
 import matplotlib.pyplot as plt
 import numpy as np
 from plots import *
+import pandas as pd 
 
 data = pd.read_csv('data/all_emigrants_high_interpolated.csv')
 data = data.iloc[:,1:]

@@ -41,11 +41,12 @@ data.co2 = data.co2 / 10000
 data.gdp = np.log(data.gdp)
 data = data.dropna()
 
-model = MigrationModel(data)
-model.run(5)
-model.get_country_stats('Sweden')
 
-## --------------------- PLOTS ------------------------------ ##
+## --------------------- 1ST RUN ------------------------------ ##
+
+model = MigrationModel(data)
+model.run(20)
+# model.get_country_stats('Sweden')
 
 destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
@@ -53,8 +54,6 @@ destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
         'Switzerland', 'United Kingdom', 'United States']
 
 plot_immigration_flow(model.countries_report[model.countries_report.country.isin(destinations)])
-
-plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['num_of_immigrants'])
 
 plot_em_countries = ['Angola', 'Argentina', 'Armenia', 'Azerbaijan', 'Bahrain', 'Belarus',
        'Bolivia', 'Bosnia and Herzegovina', 'Botswana',
@@ -67,6 +66,17 @@ df1 = model.countries_report[model.countries_report.country.isin(destinations)]
 df1['num_of_immigrants'] = model.countries_report.num_of_immigrants.diff(periods = 137)
 df1['num_of_immigrants'] = df1['num_of_immigrants'].fillna(0)
 plot_immigration_flow(df1)
+
+model.countries_report.groupby('step')['num_of_immigrants'].sum()
+model.countries_report.groupby('step')['num_of_emmigrants'].sum()
+
+## --------------------- PLOTS ------------------------------ ##
+
+
+plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['population'])
+
+model.countries_report.groupby('step')['population'].mean()
+
 
 ## ------------------------- ANALYSIS ------------------------------ ##
 
@@ -99,7 +109,7 @@ data1.loc[data[data.country == 'Italy'].index]
 data[data.country == 'Italy']
 data[(data.country == 'Sweden')&(data.year > 3)]
 
-
+model.countries_report.groupby(['step', 'country'])['num_of_emmigrants'].sum().sort_values(ascending=False)[:50]
 
 
 old = data[(data['country'] == 'Sweden')&(data['year'] == 4)].loc[:,'co2':]
@@ -116,13 +126,14 @@ model.agents_report.groupby('step').status.value_counts()
 model.agents_report.groupby('agent').status.sum()
 model.agents_report.groupby('step').count()
 model.agents_report.agent.nunique()
-len(model.agentlist)
-model.agentlist.
+model.agentlist[-3:]
+model.agents_report[model.agents_report.step == 3]
 model.agents_report[(model.agents_report.step == 1)&(model.agents_report.status == False)]
 
 model.agents_report[model.agents_report.agent == 4106][-20:]
 
-model.countries_report.groupby('step')['num_of_immigrants'].sum()
+model.countries_report.groupby('step')['num_of_emmigrants'].sum()
+model.countries_report.groupby(['step', 'country'])['num_of_immigrants'].sum().sort_values(ascending=False)[:50]
 # model.create_countries()
 model.countries_dict['Australia'].get_data_diff()
 model.countries_dict['Albania'].new_born
@@ -186,3 +197,8 @@ data.dropna().to_csv('df_for_final_sim_137unique.csv')
 
 df = load_data('data/all_emigrants_high.csv')
 df.iloc[:, 1:8].interpolate(axis=1, )
+
+
+l = ['3']
+l.append('f')
+l

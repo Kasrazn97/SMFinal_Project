@@ -9,7 +9,7 @@ from Country import *
 class MigrationModel():
 
     np.random.RandomState(seed=0)
-    
+
     def __init__(self, data, num_agents=30):   # input is a table with all info for countries, columns: 'country', '1', 'gdp', 'life_exp'...
 
         self.data = data
@@ -33,7 +33,7 @@ class MigrationModel():
         a = Agent(self.agentlist[-1:][0].id+1, country, self.countries_dict)
         a.timestep = self.epoch
         self.agentlist.append(a)
-        print(f'Agent {a} is added')
+        # print(f'Agent {a} is added')
 
     def initialize_countries(self):
 
@@ -58,9 +58,9 @@ class MigrationModel():
 
         self.initialize_countries()
         self.initialize_agents()
-
         while self.epoch < EPOCHS:
             print(f'Step {self.epoch+1} has started. 13/06')
+            print(f'number of agents at step {self.epoch}:', len(self.agentlist))
             for c in self.countries_dict.values():
                 c.step()
             for a in self.agentlist:
