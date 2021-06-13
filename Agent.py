@@ -52,7 +52,7 @@ class Agent():
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
         NAcoef = 0.1
-        BenefitCoef = 0.2
+        BenefitCoef = 0.5
 
         p = np.array(self.country.prob)
         network_abroad = []
@@ -61,7 +61,7 @@ class Agent():
         if self.timestep > 0:
             for c in destinations: # compute the share of immigrants from my country as a share of all immigrants in the destination country 
                 benefits.append(self.countries_dict[c].benefits) # store benefits of each country
-                if sum(self.countries_dict[c].num_of_immigrants.values()) != 0:
+                if sum(self.countries_dict[c].num_of_immigrants.values()) > 0:
                     network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/sum(self.countries_dict[c].num_of_immigrants.values()))
                 else:
                     network_abroad.append(0)
@@ -69,7 +69,8 @@ class Agent():
         else:
             network_abroad = np.zeros(len(p))
             benefits = np.zeros(len(p))
-
+            
+        print('benefits', benefits)
         p = p + NAcoef*np.array(network_abroad) + BenefitCoef*np.array(benefits)
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
@@ -97,12 +98,13 @@ class Agent():
         if self.unmoved:
             if self.decide_to_move():
                 chosen_country = self.choose_country()
+                print(f'chosen country is {chosen_country}')
                 if self.country._name != chosen_country:
-                    self.country.num_of_emmigrants[self.country._name] += 1 # increase num of emmigrants in home country to a certain country
-                    self.country.population -= 1
+                    # self.country.num_of_emmigrants[self.country._name] += 1 # increase num of emmigrants in home country to a certain country
+                    # self.country.population -= 1
                     self.country = self.countries_dict[chosen_country] 
-                    self.country.num_of_immigrants[chosen_country] += 1 # increase num of immigrants in destination country
-                    self.country.population += 1
+                    # self.country.num_of_immigrants[chosen_country] += 1 # increase num of immigrants in destination country
+                    # self.country.population += 1
                     self.unmoved = False
         self.age += 1
         self.timestep += 1

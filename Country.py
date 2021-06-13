@@ -12,7 +12,7 @@ import numpy as np
 class Country():
 
     np.random.RandomState(seed=0)
-    
+
     def __init__(self, data, num_agents, country_name): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
         
         self.data = data
@@ -48,9 +48,9 @@ class Country():
         """
 
         self.data_diff = pd.DataFrame()
-        if (self.timestep == 3)&(self._name == 'Italy'):
-            self.keep_brains()
-            print('Policies in place')
+        # if (self.timestep == 3)&(self._name == 'Sweden'):
+        #     self.keep_brains()
+        #     print('Policies in place')
         data = self.data[self.data['year'] == self.timestep]
         for c in self.destinations:
         # for c in data.country.unique():

@@ -41,12 +41,13 @@ data.co2 = data.co2 / 10000
 data.gdp = np.log(data.gdp)
 data = data.dropna()
 
-
 ## --------------------- 1ST RUN ------------------------------ ##
 
 model = MigrationModel(data)
-model.run(20)
+model.run(6, policies=True)
 # model.get_country_stats('Sweden')
+
+model.countries_dict['Canada']
 
 destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
@@ -70,11 +71,13 @@ plot_immigration_flow(df1)
 model.countries_report.groupby('step')['num_of_immigrants'].sum()
 model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 
+plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['num_of_immigrants'])
+
+
 ## --------------------- PLOTS ------------------------------ ##
 
 
 plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['population'])
-
 model.countries_report.groupby('step')['population'].mean()
 
 

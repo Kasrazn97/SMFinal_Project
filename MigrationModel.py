@@ -33,6 +33,7 @@ class MigrationModel():
         a = Agent(self.agentlist[-1:][0].id+1, country, self.countries_dict)
         a.timestep = self.epoch
         self.agentlist.append(a)
+
         # print(f'Agent {a} is added')
 
     def initialize_countries(self):
@@ -47,17 +48,18 @@ class MigrationModel():
             policy_matrix = np.ones(self.data.loc[:, 'co2':'gdp'].shape)
 
             # increase ExpEd
-            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(data.year > policy_start_year)].index, 2] = 2
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 2] = 2
             # increase ExpRd
-            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(data.year > policy_start_year)].index, 1] = 2
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 1] = 3
             # increase ExpHealth
-            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(data.year > policy_start_year)].index, 3] = 2
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 3] = 2
         
             self.data.loc[:, 'co2':'gdp'] = self.data.loc[:, 'co2':'gdp'] * policy_matrix
             print('Policies in place')
 
         self.initialize_countries()
         self.initialize_agents()
+
         while self.epoch < EPOCHS:
             print(f'Step {self.epoch+1} has started. 13/06')
             print(f'number of agents at step {self.epoch}:', len(self.agentlist))
@@ -65,7 +67,14 @@ class MigrationModel():
                 c.step()
             for a in self.agentlist:
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
+                if (a.age > 30) or (a.unmoved == False):
+                    self.agentlist.remove(a)
                 a.step()
+                if a.unmoved == False:
+                    self.countries_dict[a.home_country].num_of_emmigrants[a.country._name] += 1
+                    self.countries_dict[a.home_country].population -= 1
+                    self.countries_dict[a.country._name].num_of_immigrants[a.home_country] += 1
+                    self.countries_dict[a.country._name].population += 1
             for c in self.countries_dict.values():
                 if self.epoch > 0:
                     for k in range(c.new_born): # add new agents
