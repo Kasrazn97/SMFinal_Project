@@ -9,6 +9,8 @@ import pandas as pd
 
 class Agent():
 
+    np.random.RandomState(seed=0)
+
     def __init__(self, id, home_country, countries_dict): # home_country STRING, countries_dict DICT
 
         self.id = id
@@ -20,9 +22,6 @@ class Agent():
             self.gender = 0 # female
         else:
             self.gender = 1 # male
-        # self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2) # should be inherented from the country class - # google std of wage 
-        # a = np.random.gamma(2,2,348) # change this 
-        # self.age = np.random.choice(np.floor(a*45/max(a)+25))
         self.age = int(np.random.uniform(0,30,1))
         self.ambition = np.random.random() # declines with age
         self.unmoved = True
@@ -52,26 +51,24 @@ class Agent():
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
-    #     destinations_dict = {k: v for k,v in countries_dict.items() if k in destinations}
-        # countries = list(self.countries_dict.keys())
-        # p = np.zeros(len(self.countries_dict))
-        # for i, c in enumerate(self.countries_dict.values()):
-        #     p[i] = c.prob
-        # print([(k,v) for k,v in zip(countries_dict.keys(), p)], p.sum())
-        # print(self.country._name)
+        NAcoef = 0.1
+        BenefitCoef = 0.2
+
         p = np.array(self.country.prob)
         network_abroad = []
+        benefits = []
+
         for c in destinations: # compute the share of immigrants from my country as a share of all immigrants in the destination country 
+            benefits.append(c.benefits) # store benefits of each country
             if sum(self.countries_dict[c].num_of_immigrants.values()) != 0:
                 network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/sum(self.countries_dict[c].num_of_immigrants.values()))
             else:
                 network_abroad.append(0)
-        # print(len(network_abroad))
-        NAcoef = 0.1
-        p = p + NAcoef*np.array(network_abroad)
+        print('network abroad', network_abroad)
+
+        p = p + NAcoef*np.array(network_abroad) + BenefitCoef*benefits
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
-        # print('p_cumsum:', p_cumsum)
         r = np.random.uniform(0,1,1)
         country_id = np.argmax((p_cumsum - r) > 0)
         if country_id == -1:
@@ -94,13 +91,11 @@ class Agent():
 
     def step(self):
         if self.unmoved:
-            # print(self.willingness_to_move())
             if self.decide_to_move():
                 chosen_country = self.choose_country()
                 if self.country._name != chosen_country:
                     self.country.num_of_emmigrants[self.country._name] += 1 # increase num of emmigrants in home country to a certain country
                     self.country = self.countries_dict[chosen_country] 
-                    # self.update_income()
                     self.country.num_of_immigrants[chosen_country] += 1 # increase num of immigrants in destination country
                     self.unmoved = False
         self.age += 1

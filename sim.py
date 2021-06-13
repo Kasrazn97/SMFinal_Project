@@ -12,6 +12,8 @@ from Country import *
 from MigrationModel import *
 from plots import *
 
+np.random.RandomState(seed=0)
+
 def load_data(file_path):
     """
     Data should be in .csv format. [add any data transformations here]
@@ -112,7 +114,10 @@ model.countries_report.country.unique()[:30]
 model.agents_report.groupby('step').status.sum()
 model.agents_report.groupby('step').status.value_counts()
 model.agents_report.groupby('agent').status.sum()
+model.agents_report.groupby('step').count()
 model.agents_report.agent.nunique()
+len(model.agentlist)
+model.agentlist.
 model.agents_report[(model.agents_report.step == 1)&(model.agents_report.status == False)]
 
 model.agents_report[model.agents_report.agent == 4106][-20:]

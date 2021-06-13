@@ -8,6 +8,8 @@ from Country import *
 
 class MigrationModel():
 
+    np.random.RandomState(seed=0)
+    
     def __init__(self, data, num_agents=30):   # input is a table with all info for countries, columns: 'country', '1', 'gdp', 'life_exp'...
 
         self.data = data
@@ -29,6 +31,7 @@ class MigrationModel():
     def add_agents(self, country):
         
         a = Agent(self.agentlist[-1:][0].id+1, country, self.countries_dict)
+        a.timestep = self.epoch
         self.agentlist.append(a)
         print(f'Agent {a} is added')
 
@@ -38,7 +41,7 @@ class MigrationModel():
             c = Country(self.data, self.num_agents, country) # self.data is dataframe with all info about countries
             self.countries_dict[country] = c
 
-    def run(self, EPOCHS=30, policies = False, policy_start_year = 3, policy_countries = ['Italy']):
+    def run(self, EPOCHS=30, policies = False, policy_start_year = 3, policy_countries = ['Sweden']):
 
         if policies == True:
             policy_matrix = np.ones(self.data.loc[:, 'co2':'gdp'].shape)

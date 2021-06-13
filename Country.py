@@ -11,6 +11,8 @@ import numpy as np
 
 class Country():
 
+    np.random.RandomState(seed=0)
+    
     def __init__(self, data, num_agents, country_name): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
         
         self.data = data
@@ -28,11 +30,11 @@ class Country():
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
 
-    def grow_gdp(self): 
-        self.data[(self.data['country'] == self._name)&(self.data['year'] == self.timestep)]['gdp'] *= 1.05
+    # def grow_gdp(self): 
+    #     self.data[(self.data['country'] == self._name)&(self.data['year'] == self.timestep)]['gdp'] *= 1.05
     
-    def increase_expEd(self): 
-        self.data[(self.data['country'] == self._name)&(self.data['year'] == self.timestep)]['expEd'] += 5
+    # def increase_expEd(self): 
+    #     self.data[(self.data['country'] == self._name)&(self.data['year'] == self.timestep)]['expEd'] += 5
 
     def keep_brains(self):
         self.benefits += 1
@@ -46,9 +48,7 @@ class Country():
         """
 
         self.data_diff = pd.DataFrame()
-        if (self.timestep == 4)&(self._name == 'Sweden'):
-            self.grow_gdp()
-            self.increase_expEd()
+        if (self.timestep == 3)&(self._name == 'Italy'):
             self.keep_brains()
             print('Policies in place')
         data = self.data[self.data['year'] == self.timestep]
