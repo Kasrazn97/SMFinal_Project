@@ -59,7 +59,7 @@ class Agent():
         benefits = []
 
         for c in destinations: # compute the share of immigrants from my country as a share of all immigrants in the destination country 
-            benefits.append(c.benefits) # store benefits of each country
+            benefits.append(self.countries_dict[c].benefits) # store benefits of each country
             if sum(self.countries_dict[c].num_of_immigrants.values()) != 0:
                 network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/sum(self.countries_dict[c].num_of_immigrants.values()))
             else:
