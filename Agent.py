@@ -9,8 +9,6 @@ import pandas as pd
 
 class Agent():
 
-    np.random.RandomState(seed=0)
-
     def __init__(self, id, home_country, countries_dict): # home_country STRING, countries_dict DICT
 
         self.id = id
@@ -35,10 +33,10 @@ class Agent():
             return 0
         # TODO: calibrate coefficients 
     
-    def decide_to_move(self, thresh=0.7):
-        p = np.random.random()
+    def decide_to_move(self, thresh=0.5):
+        # p = np.random.random()
         # print(self.willingness_to_move())
-        if self.willingness_to_move() > p:
+        if self.willingness_to_move() > thresh:
             return True
         else:
             return False
@@ -65,12 +63,12 @@ class Agent():
                     network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/sum(self.countries_dict[c].num_of_immigrants.values()))
                 else:
                     network_abroad.append(0)
-            print('network abroad', network_abroad)
+            # print('network abroad', network_abroad)
         else:
             network_abroad = np.zeros(len(p))
             benefits = np.zeros(len(p))
 
-        print('benefits', benefits)
+        # print('benefits', benefits)
         p = p + NAcoef*np.array(network_abroad) + BenefitCoef*np.array(benefits)
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()

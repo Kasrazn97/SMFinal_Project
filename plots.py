@@ -38,7 +38,7 @@ def plot_immigration_flow(data):
 
     colors = get_colors(len(data['country'].unique()))
     for i, country in enumerate(data['country'].unique()):
-            plt.plot(np.arange(1, STEPS+1, 1),    
+            plt.plot(np.arange(1, STEPS+2, 1),    
                     data[data['country'] == country]['num_of_immigrants'],
                             lw=2, 
                     color=colors[i]

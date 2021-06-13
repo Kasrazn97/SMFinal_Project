@@ -44,8 +44,11 @@ data = data.dropna()
 ## --------------------- 1ST RUN ------------------------------ ##
 
 model = MigrationModel(data)
-model.run(6, policies=True)
+model.run(4, policies=True)
 # model.get_country_stats('Sweden')
+
+model.countries_report[model.countries_report.country.isin(destinations)].step.nunique()
+
 
 destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',

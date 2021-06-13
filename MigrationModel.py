@@ -8,8 +8,6 @@ from Country import *
 
 class MigrationModel():
 
-    np.random.RandomState(seed=0)
-
     def __init__(self, data, num_agents=30):   # input is a table with all info for countries, columns: 'country', '1', 'gdp', 'life_exp'...
 
         self.data = data
@@ -36,6 +34,7 @@ class MigrationModel():
         
         a = Agent(self.agentlist[-1:][0].id+1, country, self.countries_dict)
         a.timestep = self.epoch
+        a.age = 1
         self.agentlist.append(a)
         self.countries_dict[a.home_country].population += 1
 
@@ -70,7 +69,6 @@ class MigrationModel():
             print(f'number of agents at step {self.epoch}:', len(self.agentlist))
 
             for c in self.countries_dict.values():
-
                 self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
                 c.step()
                 if self.epoch == 0:

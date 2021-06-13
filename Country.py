@@ -11,8 +11,6 @@ import numpy as np
 
 class Country():
 
-    np.random.RandomState(seed=0)
-
     def __init__(self, data, num_agents, country_name): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
         
         self.data = data
