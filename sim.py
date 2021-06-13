@@ -37,8 +37,9 @@ data = load_data('df_for_final_sim_137unique.csv')
 # data = data[data['year'] != 39]
 data.co2 = data.co2 / 10000
 data.gdp = np.log(data.gdp)
+data = data.dropna()
 
-model = MigrationModel(data.dropna())
+model = MigrationModel(data)
 model.run(5)
 model.get_country_stats('Sweden')
 
@@ -51,7 +52,7 @@ destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
 
 plot_immigration_flow(model.countries_report[model.countries_report.country.isin(destinations)])
 
-plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Chile']['num_of_immigrants'])
+plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['num_of_immigrants'])
 
 plot_em_countries = ['Angola', 'Argentina', 'Armenia', 'Azerbaijan', 'Bahrain', 'Belarus',
        'Bolivia', 'Bosnia and Herzegovina', 'Botswana',
@@ -87,6 +88,23 @@ data_on_destinations[data_on_destinations.year > 4].iloc[:, 1:].groupby('year').
 
 ## ------------------------- CHECKS ------------------------------ ##
 
+
+policy_matrix = np.ones(data.loc[:, 'co2':'gdp'].shape)
+policy_matrix[data[(data.country == 'Italy')&(data.year > 3)]['gdp'].index, 1] = 2
+policy_matrix[data[(data.country == 'Italy')&(data.year > 3)]['gdp'].index]
+data.loc[:, 'co2':'gdp'] = data.loc[:, 'co2':'gdp'] * policy_matrix
+data1.loc[data[data.country == 'Italy'].index]
+data[data.country == 'Italy']
+data[(data.country == 'Sweden')&(data.year > 3)]
+
+
+
+
+old = data[(data['country'] == 'Sweden')&(data['year'] == 4)].loc[:,'co2':]
+data[(data['country'] == 'Sweden')&(data['year'] == 4)].iloc[0,1:] = old*np.array([1,1,1,1,2,1])
+*= 1.001
+data.loc[(data['country'] == 'Sweden')&(data['year'] == 4)].loc[:,'co2':] = old*np.array([1,1,1,1,2,1])
+
 model.countries_report[model.countries_report.country == 'Burkina Faso']
 model.countries_report.step.max()+1.5
 model.agents_report.head(30)
@@ -104,7 +122,7 @@ model.countries_report.groupby('step')['num_of_immigrants'].sum()
 model.countries_dict['Australia'].get_data_diff()
 model.countries_dict['Albania'].new_born
 print(len(model.countries_dict['Togo'].prob))
-# model.countries_dict['Australia'].data_diff
+model.countries_dict['Australia'].data_diff
 # model.countries_dict['Australia'].population
 for c in model.countries_dict.keys():
     print(model.countries_dict[c].new_born)

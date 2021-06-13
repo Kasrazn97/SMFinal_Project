@@ -38,18 +38,26 @@ class MigrationModel():
             c = Country(self.data, self.num_agents, country) # self.data is dataframe with all info about countries
             self.countries_dict[country] = c
 
-    def run(self, EPOCHS=30, policy=False):
+    def run(self, EPOCHS=30, policies = False, policy_start_year = 3, policy_countries = ['Italy']):
 
-        # if policy == True:
-        #     policy_matrix = np.ones(self.data.shape)
-        #     policy_matrix[data[(data.country == 'Italy')*(data.year > 3)]['gdp'].index, 1] = 1
-        #     self.data = self.data * policy_matrix
+        if policies == True:
+            policy_matrix = np.ones(self.data.loc[:, 'co2':'gdp'].shape)
+
+            # increase ExpEd
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(data.year > policy_start_year)].index, 2] = 2
+            # increase ExpRd
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(data.year > policy_start_year)].index, 1] = 2
+            # increase ExpHealth
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(data.year > policy_start_year)].index, 3] = 2
+        
+            self.data.loc[:, 'co2':'gdp'] = self.data.loc[:, 'co2':'gdp'] * policy_matrix
+            print('Policies in place')
 
         self.initialize_countries()
         self.initialize_agents()
 
         while self.epoch < EPOCHS:
-            print(f'Step {self.epoch+1} has started')
+            print(f'Step {self.epoch+1} has started. 13/06')
             for c in self.countries_dict.values():
                 c.step()
             for a in self.agentlist:
