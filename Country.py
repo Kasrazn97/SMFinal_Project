@@ -40,8 +40,8 @@ class Country():
     def keep_brains(self):
         self.benefits += 1
             
-    def grow_population(self):
-        self.population += 2
+    # def grow_population(self):
+    #     self.population += 2
 
     def get_data_diff(self):
         """
@@ -106,7 +106,7 @@ class Country():
         self.set_country_probability()
         # print(self.prob)
         self.timestep += 1
-        self.grow_population()
+        # self.grow_population()
         self.new_born = 0
 
 

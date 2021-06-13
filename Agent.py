@@ -18,7 +18,7 @@ class Agent():
         self.countries_dict = countries_dict
         self.country = self.countries_dict[self.home_country]
         p = np.random.random()
-        if p > 0.5:
+        if p < 0.5:
             self.gender = 0 # female
         else:
             self.gender = 1 # male
@@ -35,7 +35,7 @@ class Agent():
             return 0
         # TODO: calibrate coefficients 
     
-    def decide_to_move(self, thresh=0.4):
+    def decide_to_move(self, thresh=0.7):
         p = np.random.random()
         # print(self.willingness_to_move())
         if self.willingness_to_move() > p:
@@ -108,8 +108,6 @@ class Agent():
                     self.unmoved = False
         self.age += 1
         self.timestep += 1
-        if self.age > 30:
-            self.country.new_born += 1
 
 
 

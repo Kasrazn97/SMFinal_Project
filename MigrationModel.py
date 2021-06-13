@@ -65,18 +65,18 @@ class MigrationModel():
         self.initialize_countries()
         self.initialize_agents()
 
-        while self.epoch < EPOCHS:
+        while self.epoch <= EPOCHS:
             print(f'Step {self.epoch+1} has started. 13/06')
             print(f'number of agents at step {self.epoch}:', len(self.agentlist))
 
             for c in self.countries_dict.values():
+
+                self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
                 c.step()
                 if self.epoch == 0:
                     c.community_network = pd.DataFrame({k: 0 for k, v in self.countries_dict[c._name].num_of_immigrants.items()}, index=[0]).T
             
             for a in self.agentlist:
-                if (a.age > 30) or (a.unmoved == False):
-                    self.agentlist.remove(a)
                 a.step()
                 if a.unmoved == False:
                     self.countries_dict[a.home_country].num_of_emmigrants[a.country._name] += 1
@@ -84,19 +84,24 @@ class MigrationModel():
                     self.countries_dict[a.country._name].num_of_immigrants[a.home_country] += 1
                     self.countries_dict[a.country._name].population += 1
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
+                if a.unmoved == False:
+                    self.agentlist.remove(a)
+                if a.age > 30:
+                    self.add_agents(a.country._name)
+                    try:
+                        self.agentlist.remove(a)
+                    except ValueError:
+                        continue
+                    print(f'Agent {a} is added')
 
-            for c in self.countries_dict.values():
-                if self.epoch > 0:
-                    for k in range(c.new_born): # add new agents
-                        self.add_agents(c._name)
-                        print(f'Agent {a} is added')
-                    
-                    if c._name in self.destinations: # collect community network strength info 
-                        df = pd.DataFrame({k: v/sum(self.countries_dict[c._name].num_of_immigrants.values()) for k, v in self.countries_dict[c._name].num_of_immigrants.items()}, index=[0]).T
-                        c.community_network = pd.concat([c.community_network, df], axis=1)
-                
-                self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
- 
+            for c in self.destinations: # collect community network strength info 
+                df = pd.DataFrame({k: v/sum(self.countries_dict[c].num_of_immigrants.values()) for k, v in self.countries_dict[c].num_of_immigrants.items()}, index=[0]).T
+                self.countries_dict[c].community_network = pd.concat([self.countries_dict[c].community_network, df], axis=1)
+            
+            if self.epoch == EPOCHS:
+                for c in self.countries_dict.values():
+                    self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
+
             self.epoch +=1
         print("Simulation completed")
 

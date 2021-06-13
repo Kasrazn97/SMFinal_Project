@@ -72,7 +72,8 @@ model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['num_of_immigrants'])
 
 model.countries_dict['Sweden'].community_network
-
+model.agentlist[0]
+model.agentlist.remove(model.agentlist[0])
 
 ## --------------------- PLOTS ------------------------------ ##
 
@@ -80,7 +81,6 @@ model.countries_dict['Sweden'].community_network
 plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['population'])
 
 model.countries_report.groupby('step')['population'].mean()
-
 model.countries_dict[c].num_of_immigrants
 
 for country in destinations: model.countries_report.groupby('country')['num_immigrants']
@@ -100,7 +100,6 @@ plt.plot(data_on_senders.year.unique(), data_on_destinations.iloc[:, 1:].groupby
 plt.legend()
 data_on_destinations.iloc[:, 1:].groupby('year').mean()
 
-
 data_on_senders[data_on_senders.year > 4].iloc[:, 1:].groupby('year').mean()
 data_on_destinations[data_on_destinations.year > 4].iloc[:, 1:].groupby('year').mean()
 
@@ -114,23 +113,25 @@ data1.loc[data[data.country == 'Italy'].index]
 data[data.country == 'Italy']
 data[(data.country == 'Sweden')&(data.year > 3)]
 
-model.countries_report.groupby(['step', 'country'])['num_of_emmigrants'].sum().sort_values(ascending=False)[:50]
+model.countries_report.groupby(['step', 'country'])['num_of_immigrants'].sum().sort_values(ascending=False)[:50]
 
-
-old = data[(data['country'] == 'Sweden')&(data['year'] == 4)].loc[:,'co2':]
-data[(data['country'] == 'Sweden')&(data['year'] == 4)].iloc[0,1:] = old*np.array([1,1,1,1,2,1])
-*= 1.001
-data.loc[(data['country'] == 'Sweden')&(data['year'] == 4)].loc[:,'co2':] = old*np.array([1,1,1,1,2,1])
+# old = data[(data['country'] == 'Sweden')&(data['year'] == 4)].loc[:,'co2':]
+# data[(data['country'] == 'Sweden')&(data['year'] == 4)].iloc[0,1:] = old*np.array([1,1,1,1,2,1])
+# *= 1.001
+# data.loc[(data['country'] == 'Sweden')&(data['year'] == 4)].loc[:,'co2':] = old*np.array([1,1,1,1,2,1])
 
 model.countries_report[model.countries_report.country == 'Burkina Faso']
 model.countries_report.step.max()+1.5
-model.agents_report.head(30)
+model.agents_report.tail(30)
 model.countries_report.country.unique()[:30]
 model.agents_report.groupby('step').country.value_counts()[-30:]
 model.agents_report.groupby('step').status.value_counts()
+
 model.agents_report.willingness_to_move = model.agents_report.willingness_to_move.astype('float')
 model.agents_report.groupby('step').willingness_to_move.mean()
-model.agents_report.groupby('step').count()
+
+model.agents_report.age = model.agents_report.age.astype('float')
+model.agents_report.groupby('step').age.mean()
 model.agents_report.agent.nunique()
 
 model.agents_report[model.agents_report.step == 3]
