@@ -47,8 +47,6 @@ model = MigrationModel(data)
 model.run(6, policies=True)
 # model.get_country_stats('Sweden')
 
-model.countries_dict['Canada']
-
 destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
@@ -73,13 +71,19 @@ model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 
 plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['num_of_immigrants'])
 
+model.countries_dict['Sweden'].community_network
+
 
 ## --------------------- PLOTS ------------------------------ ##
 
 
 plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Sweden']['population'])
+
 model.countries_report.groupby('step')['population'].mean()
 
+model.countries_dict[c].num_of_immigrants
+
+for country in destinations: model.countries_report.groupby('country')['num_immigrants']
 
 ## ------------------------- ANALYSIS ------------------------------ ##
 
@@ -100,9 +104,7 @@ data_on_destinations.iloc[:, 1:].groupby('year').mean()
 data_on_senders[data_on_senders.year > 4].iloc[:, 1:].groupby('year').mean()
 data_on_destinations[data_on_destinations.year > 4].iloc[:, 1:].groupby('year').mean()
 
-
 ## ------------------------- CHECKS ------------------------------ ##
-
 
 policy_matrix = np.ones(data.loc[:, 'co2':'gdp'].shape)
 policy_matrix[data[(data.country == 'Italy')&(data.year > 3)]['gdp'].index, 1] = 2
@@ -124,12 +126,13 @@ model.countries_report[model.countries_report.country == 'Burkina Faso']
 model.countries_report.step.max()+1.5
 model.agents_report.head(30)
 model.countries_report.country.unique()[:30]
-model.agents_report.groupby('step').status.sum()
+model.agents_report.groupby('step').country.value_counts()[-30:]
 model.agents_report.groupby('step').status.value_counts()
-model.agents_report.groupby('agent').status.sum()
+model.agents_report.willingness_to_move = model.agents_report.willingness_to_move.astype('float')
+model.agents_report.groupby('step').willingness_to_move.mean()
 model.agents_report.groupby('step').count()
 model.agents_report.agent.nunique()
-model.agentlist[-3:]
+
 model.agents_report[model.agents_report.step == 3]
 model.agents_report[(model.agents_report.step == 1)&(model.agents_report.status == False)]
 
@@ -200,8 +203,3 @@ data.dropna().to_csv('df_for_final_sim_137unique.csv')
 
 df = load_data('data/all_emigrants_high.csv')
 df.iloc[:, 1:8].interpolate(axis=1, )
-
-
-l = ['3']
-l.append('f')
-l

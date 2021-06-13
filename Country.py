@@ -29,6 +29,7 @@ class Country():
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
+        self.community_network = None
 
     # def grow_gdp(self): 
     #     self.data[(self.data['country'] == self._name)&(self.data['year'] == self.timestep)]['gdp'] *= 1.05

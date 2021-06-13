@@ -35,7 +35,7 @@ class Agent():
             return 0
         # TODO: calibrate coefficients 
     
-    def decide_to_move(self, thresh=0.2):
+    def decide_to_move(self, thresh=0.4):
         p = np.random.random()
         # print(self.willingness_to_move())
         if self.willingness_to_move() > p:
@@ -69,7 +69,7 @@ class Agent():
         else:
             network_abroad = np.zeros(len(p))
             benefits = np.zeros(len(p))
-            
+
         print('benefits', benefits)
         p = p + NAcoef*np.array(network_abroad) + BenefitCoef*np.array(benefits)
         p_scaled = p / p.sum()
