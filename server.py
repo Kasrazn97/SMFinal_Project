@@ -36,10 +36,3 @@ server = ModularServer(SchellingModel,
                        "Schelling’s Segregation Model",
                        20, 20, 0.8, 0.2, 4)
 
-
-import numpy as np
-
-a = np.array([1,-3, 4,3,2,2,-3,-2])
-np.argmax(a < 0)
-
-a - 1

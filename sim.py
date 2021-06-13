@@ -39,8 +39,8 @@ data.co2 = data.co2 / 10000
 data.gdp = np.log(data.gdp)
 
 model = MigrationModel(data.dropna())
-model.run(2)
-model.get_country_stats('Bulgaria')
+model.run(5)
+model.get_country_stats('Sweden')
 
 ## --------------------- PLOTS ------------------------------ ##
 
@@ -51,7 +51,7 @@ destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
 
 plot_immigration_flow(model.countries_report[model.countries_report.country.isin(destinations)])
 
-plt.bar(model.countries_report[model.countries_report.country == 'Germany']['step'], model.countries_report[model.countries_report.country == 'Germany']['num_of_immigrants'])
+plt.bar(df1[df1.country == 'Sweden']['step'], df1[df1.country == 'Chile']['num_of_immigrants'])
 
 plot_em_countries = ['Angola', 'Argentina', 'Armenia', 'Azerbaijan', 'Bahrain', 'Belarus',
        'Bolivia', 'Bosnia and Herzegovina', 'Botswana',
@@ -60,9 +60,30 @@ plot_em_countries = ['Angola', 'Argentina', 'Armenia', 'Azerbaijan', 'Bahrain', 
 
 plot_emmigration_flow(model.countries_report[model.countries_report.country.isin(plot_em_countries)])
 
-df1 = model.countries_report
+df1 = model.countries_report[model.countries_report.country.isin(destinations)]
 df1['num_of_immigrants'] = model.countries_report.num_of_immigrants.diff(periods = 137)
 df1['num_of_immigrants'] = df1['num_of_immigrants'].fillna(0)
+plot_immigration_flow(df1)
+
+## ------------------------- ANALYSIS ------------------------------ ##
+
+data[(data.year == 0)&(data.country.isin(destinations))].sort_values('gdp')
+senders = set(data.country.unique()) - set(destinations)
+data_on_senders = data[data.country.isin(senders)]
+data_on_destinations = data[data.country.isin(destinations)]
+
+data_on_senders[data_on_senders.year <= 4].iloc[:, 1:].groupby('year').mean()
+data_on_destinations[data_on_destinations.year <= 4].iloc[:, 1:].groupby('year').mean()
+
+plt.plot(data_on_senders.year.unique(), data_on_senders.iloc[:, 1:].groupby('year').mean())
+plt.plot(data_on_senders.year.unique(), data_on_destinations.iloc[:, 1:].groupby('year').mean())
+plt.legend()
+data_on_destinations.iloc[:, 1:].groupby('year').mean()
+
+
+data_on_senders[data_on_senders.year > 4].iloc[:, 1:].groupby('year').mean()
+data_on_destinations[data_on_destinations.year > 4].iloc[:, 1:].groupby('year').mean()
+
 
 ## ------------------------- CHECKS ------------------------------ ##
 
@@ -89,32 +110,6 @@ for c in model.countries_dict.keys():
     print(model.countries_dict[c].new_born)
 
 model.get_country_stats('Austria')
-
-model.agentlist[-1:][0].id
-# pd.read_csv('/Users/aliyadavletshina/Desktop/Bocconi/modeling&simulation/final_project/SMFinal_Project/data/Country_probabilities.csv')
-# pd.read_csv('data/Education_index.csv')
-
-# data = pd.read_csv('data/countries_data_1.csv', sep=';', nrows=31)
-# data = data.drop_duplicates(subset='country')
-# data = data.reset_index(drop=True)
-# all_data = pd.DataFrame()
-# for country in data.country.unique():
-#     df = pd.DataFrame(np.tile(data[data.country == country], (30,1)))
-#     all_data = all_data.append(df, ignore_index=True)
-# all_data.columns = data.columns
-# all_data['gdp'] = all_data['gdp'].apply(lambda x: np.log(x))
-# all_data.to_csv('all_data.csv', header=True)
-# data = pd.read_csv('all_data.csv').drop('Unnamed: 0', axis=1)
-
-# countries_dict = {}
-# destinations = ['Austria', 'Germany']
-# for country in data.country.unique():
-#     c = Country(data[data['country'] == country]) # df is dataframe with all info about countries
-#     countries_dict[country] = c
-
-# destinations_names = [country for country in list(countries_dict.keys()) if country in destinations]
-# destinations = {k: v for k,v in countries_dict.items() if k in destinations_names}
-
 
 ## ------------------- MERGING DATA WITH ALL INDICATORS ------------------ ##
 
