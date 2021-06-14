@@ -102,9 +102,10 @@ class MigrationModel():
             for c in self.countries_dict.values():
                 for a in range(c.new_born):
                     self.add_agents(c._name, new_born=True)
+                c.new_born = 0
                 for a in range(c.new_agent):
                     self.add_agents(c._name)
-                    
+                c.new_agent = 0
                     # k = np.random.randint(0,len(self.countries_dict))
                     # self.add_agents(list(self.countries_dict.keys())[k])
 

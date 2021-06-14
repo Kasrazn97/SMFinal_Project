@@ -25,6 +25,8 @@ class Country():
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
         self.community_network = None
+        self.new_born = 0
+        self.new_agent = 0
 
     def keep_brains(self):
         self.benefits += 1
@@ -35,7 +37,7 @@ class Country():
         """
 
         self.data_diff = pd.DataFrame()
-        if (self.timestep == 3)&(self._name == 'Sweden'):
+        if (self.timestep == 2)&(self._name == 'Sweden'):
             self.keep_brains()
             print('Policies in place')
         data = self.data[self.data['year'] == self.timestep]
