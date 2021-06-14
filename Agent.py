@@ -32,7 +32,7 @@ class Agent():
         else:
             return 0
     
-    def decide_to_move(self, thresh=0.7): # if I do not migrate in the first year then every year prob will descrease
+    def decide_to_move(self, thresh=0.2): # if I do not migrate in the first year then every year prob will descrease
         if self.willingness_to_move() > thresh:
             return True
         else:

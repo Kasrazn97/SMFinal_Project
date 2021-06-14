@@ -85,12 +85,12 @@ class MigrationModel():
                     self.countries_dict[a.country._name].population += 1
                 if a.age > 29:
                     self.add_agents(a.country._name, new_born=True)
-                    # self.agentlist.remove(a)
+                    self.agentlist.remove(a)
                 if a.unmoved == False:
-                    # try:
-                    #     self.agentlist.remove(a)
-                    # except ValueError:
-                    #     continue
+                    try:
+                        self.agentlist.remove(a)
+                    except ValueError:
+                        continue
                     k = np.random.randint(0,len(self.countries_dict))
                     self.add_agents(list(self.countries_dict.keys())[k])
 
