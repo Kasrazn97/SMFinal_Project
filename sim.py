@@ -66,8 +66,11 @@ plot_emmigration_flow(model.countries_report[model.countries_report.country.isin
 
 df1 = model.countries_report[model.countries_report.country.isin(destinations)]
 df1['num_of_immigrants'] = model.countries_report.num_of_immigrants.diff(periods = 137)
+df1['num_of_emmigrants'] = model.countries_report.num_of_emmigrants.diff(periods = 137)
 df1['num_of_immigrants'] = df1['num_of_immigrants'].fillna(0)
+df1['num_of_emmigrants'] = df1['num_of_emmigrants'].fillna(0)
 plot_immigration_flow(df1)
+df1.groupby('step')['num_of_immigrants'].sum()
 
 model.countries_report.groupby('step')['num_of_immigrants'].sum()
 model.countries_report.groupby('step')['num_of_emmigrants'].sum()
@@ -125,13 +128,13 @@ model.countries_report.groupby(['step', 'country'])['num_of_immigrants'].sum().s
 
 model.countries_report[model.countries_report.country == 'Burkina Faso']
 model.countries_report.step.max()+1.5
-model.agents_report.tail(30)
+model.agents_report.head(30)
 model.countries_report.country.unique()[:30]
 model.agents_report.groupby('step').country.value_counts()[-30:]
 model.agents_report.groupby('step').status.value_counts()
 
 model.agents_report.willingness_to_move = model.agents_report.willingness_to_move.astype('float')
-model.agents_report.groupby('step').willingness_to_move.mean()
+model.agents_report.groupby('step').willingness_to_move.describe()
 
 model.agents_report.age = model.agents_report.age.astype('float')
 model.agents_report.groupby('step').age.mean()
@@ -144,14 +147,7 @@ model.agents_report[model.agents_report.agent == 4106][-20:]
 
 model.countries_report.groupby('step')['num_of_emmigrants'].sum()
 model.countries_report.groupby(['step', 'country'])['num_of_immigrants'].sum().sort_values(ascending=False)[:50]
-# model.create_countries()
-model.countries_dict['Australia'].get_data_diff()
-model.countries_dict['Albania'].new_born
-print(len(model.countries_dict['Togo'].prob))
-model.countries_dict['Australia'].data_diff
-# model.countries_dict['Australia'].population
-for c in model.countries_dict.keys():
-    print(model.countries_dict[c].new_born)
+
 
 model.get_country_stats('Austria')
 

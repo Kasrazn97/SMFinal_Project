@@ -76,21 +76,21 @@ class MigrationModel():
             
             for a in self.agentlist:
                 a.step()
+                self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
                 if a.unmoved == False:
                     self.countries_dict[a.home_country].num_of_emmigrants[a.country._name] += 1
                     self.countries_dict[a.home_country].population -= 1
                     self.countries_dict[a.country._name].num_of_immigrants[a.home_country] += 1
                     self.countries_dict[a.country._name].population += 1
-                self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
-                if a.unmoved == False:
-                    self.agentlist.remove(a)
                 if a.age > 30:
                     self.add_agents(a.country._name)
+                    self.agentlist.remove(a)
+                    print(f'Agent {a} is added')
+                if a.unmoved == False:
                     try:
                         self.agentlist.remove(a)
                     except ValueError:
                         continue
-                    print(f'Agent {a} is added')
 
             for c in self.destinations: # collect community network strength info 
                 df = pd.DataFrame({k: v/sum(self.countries_dict[c].num_of_immigrants.values()) for k, v in self.countries_dict[c].num_of_immigrants.items()}, index=[0]).T

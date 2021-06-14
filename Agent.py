@@ -33,7 +33,7 @@ class Agent():
             return 0
         # TODO: calibrate coefficients 
     
-    def decide_to_move(self, thresh=0.5):
+    def decide_to_move(self, thresh=0.7):
         # p = np.random.random()
         # print(self.willingness_to_move())
         if self.willingness_to_move() > thresh:
@@ -96,7 +96,7 @@ class Agent():
         if self.unmoved:
             if self.decide_to_move():
                 chosen_country = self.choose_country()
-                print(f'chosen country is {chosen_country}')
+                # print(f'chosen country is {chosen_country}')
                 if self.country._name != chosen_country:
                     # self.country.num_of_emmigrants[self.country._name] += 1 # increase num of emmigrants in home country to a certain country
                     # self.country.population -= 1
