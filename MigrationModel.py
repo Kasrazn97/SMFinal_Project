@@ -8,7 +8,7 @@ from Country import *
 
 class MigrationModel():
 
-    def __init__(self, data, num_agents=30):   # input is a table with all info for countries, columns: 'country', '1', 'gdp', 'life_exp'...
+    def __init__(self, data, num_agents=30, policies=False, policy_start_year = 3, policy_countries = ['Sweden']):   # input is a table with all info for countries, columns: 'country', '1', 'gdp', 'life_exp'...
 
         self.data = data
         self.countries_dict = {}
@@ -21,6 +21,19 @@ class MigrationModel():
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
+    
+        if policies == True:
+            policy_matrix = np.ones(self.data.loc[:, 'co2':'gdp'].shape)
+
+            # increase ExpEd
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 2] = 2
+            # increase ExpRd
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 1] = 3
+            # increase ExpHealth
+            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 3] = 2
+        
+            self.data.loc[:, 'co2':'gdp'] = self.data.loc[:, 'co2':'gdp'] * policy_matrix
+            print('Policies in place')
 
     def initialize_agents(self):
         k = 0
@@ -46,21 +59,8 @@ class MigrationModel():
             c = Country(self.data, self.num_agents, country) # self.data is dataframe with all info about countries
             self.countries_dict[country] = c
 
-    def run(self, EPOCHS=30, policies = False, policy_start_year = 3, policy_countries = ['Sweden']):
-
-        if policies == True:
-            policy_matrix = np.ones(self.data.loc[:, 'co2':'gdp'].shape)
-
-            # increase ExpEd
-            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 2] = 2
-            # increase ExpRd
-            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 1] = 3
-            # increase ExpHealth
-            policy_matrix[self.data[(self.data.country.isin(policy_countries))&(self.data.year > policy_start_year)].index, 3] = 2
+    def run(self, EPOCHS=30):
         
-            self.data.loc[:, 'co2':'gdp'] = self.data.loc[:, 'co2':'gdp'] * policy_matrix
-            print('Policies in place')
-
         self.initialize_countries()
         self.initialize_agents()
 
@@ -71,8 +71,12 @@ class MigrationModel():
             for c in self.countries_dict.values():
                 self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)
                 c.step()
-                if self.epoch == 0:
-                    c.community_network = pd.DataFrame({k: 0 for k, v in self.countries_dict[c._name].num_of_immigrants.items()}, index=[0]).T
+                if c in self.destinations:
+                    if self.epoch == 0:
+                        c.community_network = pd.DataFrame({k: 0 for k, v in self.countries_dict[c._name].num_of_immigrants.items()}, index=[0]).T
+                    else:
+                        df = pd.DataFrame({k: v/sum(self.countries_dict[c].num_of_immigrants.values()) for k, v in self.countries_dict[c].num_of_immigrants.items()}, index=[0]).T
+                        self.countries_dict[c].community_network = pd.concat([self.countries_dict[c].community_network, df], axis=1)
             
             for a in self.agentlist:
                 # print(len(self.agentlist))
@@ -94,10 +98,6 @@ class MigrationModel():
                     k = np.random.randint(0,len(self.countries_dict))
                     self.add_agents(list(self.countries_dict.keys())[k])
 
-            for c in self.destinations: # collect community network strength info 
-                df = pd.DataFrame({k: v/sum(self.countries_dict[c].num_of_immigrants.values()) for k, v in self.countries_dict[c].num_of_immigrants.items()}, index=[0]).T
-                self.countries_dict[c].community_network = pd.concat([self.countries_dict[c].community_network, df], axis=1)
-            
             if self.epoch == EPOCHS:
                 for c in self.countries_dict.values():
                     self.countries_report = self.countries_report.append(c.reporter(), ignore_index=True)

@@ -12,8 +12,6 @@ from Country import *
 from MigrationModel import *
 from plots import *
 
-np.random.RandomState(seed=0)
-
 def load_data(file_path):
     """
     Data should be in .csv format. [add any data transformations here]
@@ -44,7 +42,7 @@ data = data.dropna()
 ## --------------------- 1ST RUN ------------------------------ ##
 
 model = MigrationModel(data)
-model.run(6, policies=False)
+model.run(4, policies=False)
 
 ## --------------------- PLOTS ------------------------------ ##
 
@@ -136,7 +134,7 @@ model.get_country_stats('Austria')
 # most popular destinations at each step
 model.countries_report.groupby(['step', 'country'])['num_of_immigrants'].sum().sort_values(ascending=False)[:50]
 
-
+model.countries_dict['Angola'].data_diff
 
 ## ------------------- MERGING DATA WITH ALL INDICATORS ------------------ ##
 
