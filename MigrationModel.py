@@ -88,15 +88,25 @@ class MigrationModel():
                     self.countries_dict[a.country._name].num_of_immigrants[a.home_country] += 1
                     self.countries_dict[a.country._name].population += 1
                 if a.age > 29:
-                    self.add_agents(a.country._name, new_born=True)
+                    # self.add_agents(a.country._name, new_born=True)
+                    self.countries_dict[a.country].population -= 1
+                    self.countries_dict[a.country].new_born += 1
                     self.agentlist.remove(a)
                 if a.unmoved == False:
                     try:
                         self.agentlist.remove(a)
+                        self.countries_dict[a.country].new_agent += 1
                     except ValueError:
                         continue
-                    k = np.random.randint(0,len(self.countries_dict))
-                    self.add_agents(list(self.countries_dict.keys())[k])
+                
+            for c in self.countries_dict.values():
+                for a in range(c.new_born):
+                    self.add_agents(c._name, new_born=True)
+                for a in range(c.new_agent):
+                    self.add_agents(c._name)
+                    
+                    # k = np.random.randint(0,len(self.countries_dict))
+                    # self.add_agents(list(self.countries_dict.keys())[k])
 
             if self.epoch == EPOCHS:
                 for c in self.countries_dict.values():
