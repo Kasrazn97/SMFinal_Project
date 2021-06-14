@@ -26,16 +26,13 @@ class Agent():
         self.timestep = 0
 
     def willingness_to_move(self):
-        alpha0, alpha1, alpha2 = 1, 0.01, 1
+        alpha1 = 0.01
         if self.age <= 30:
-            return alpha0*self.ambition + alpha1**self.gender*self.ambition - alpha2*self.ambition*self.age/30
+            return self.ambition + alpha1**self.gender*self.ambition - self.ambition*self.age/30
         else:
             return 0
-        # TODO: calibrate coefficients 
     
-    def decide_to_move(self, thresh=0.7):
-        # p = np.random.random()
-        # print(self.willingness_to_move())
+    def decide_to_move(self, thresh=0.7): # if I do not migrate in the first year then every year prob will descrease
         if self.willingness_to_move() > thresh:
             return True
         else:
@@ -49,8 +46,8 @@ class Agent():
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
-        NAcoef = 0.1
-        BenefitCoef = 0.5
+        NAcoef = 10
+        BenefitCoef = 0.2
 
         p = np.array(self.country.prob)
         network_abroad = []
@@ -68,8 +65,7 @@ class Agent():
             network_abroad = np.zeros(len(p))
             benefits = np.zeros(len(p))
 
-        # print('benefits', benefits)
-        p = p + NAcoef*np.array(network_abroad) + BenefitCoef*np.array(benefits)
+        p = p + NAcoef*np.array(network_abroad) + BenefitCoef*np.array(benefits)*p
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)
@@ -78,9 +74,6 @@ class Agent():
             country_id = 0
         return destinations[country_id]
         
-    # def update_income(self):
-    #     self.income = np.random.normal(self.country.average_income, self.country.average_income*0.2)
-
     def __repr__(self): 
         """ Print info about agent """
         gender = self.gender*'male'+(1-self.gender)*'female'
@@ -96,13 +89,8 @@ class Agent():
         if self.unmoved:
             if self.decide_to_move():
                 chosen_country = self.choose_country()
-                # print(f'chosen country is {chosen_country}')
                 if self.country._name != chosen_country:
-                    # self.country.num_of_emmigrants[self.country._name] += 1 # increase num of emmigrants in home country to a certain country
-                    # self.country.population -= 1
                     self.country = self.countries_dict[chosen_country] 
-                    # self.country.num_of_immigrants[chosen_country] += 1 # increase num of immigrants in destination country
-                    # self.country.population += 1
                     self.unmoved = False
         self.age += 1
         self.timestep += 1

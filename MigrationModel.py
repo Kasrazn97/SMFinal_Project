@@ -30,15 +30,15 @@ class MigrationModel():
                 self.agentlist.append(a)
             k += 1
     
-    def add_agents(self, country):
+    def add_agents(self, country, new_born=False):
         
         a = Agent(self.agentlist[-1:][0].id+1, country, self.countries_dict)
         a.timestep = self.epoch
-        a.age = 1
+        if new_born == True:
+            a.age = 1
         self.agentlist.append(a)
         self.countries_dict[a.home_country].population += 1
-
-        # print(f'Agent {a} is added')
+        print(f'{self.agentlist[-1:]} is added, at timestep {a.timestep}')
 
     def initialize_countries(self):
 
@@ -75,6 +75,7 @@ class MigrationModel():
                     c.community_network = pd.DataFrame({k: 0 for k, v in self.countries_dict[c._name].num_of_immigrants.items()}, index=[0]).T
             
             for a in self.agentlist:
+                # print(len(self.agentlist))
                 a.step()
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
                 if a.unmoved == False:
@@ -82,15 +83,16 @@ class MigrationModel():
                     self.countries_dict[a.home_country].population -= 1
                     self.countries_dict[a.country._name].num_of_immigrants[a.home_country] += 1
                     self.countries_dict[a.country._name].population += 1
-                if a.age > 30:
-                    self.add_agents(a.country._name)
-                    self.agentlist.remove(a)
-                    print(f'Agent {a} is added')
+                if a.age > 29:
+                    self.add_agents(a.country._name, new_born=True)
+                    # self.agentlist.remove(a)
                 if a.unmoved == False:
-                    try:
-                        self.agentlist.remove(a)
-                    except ValueError:
-                        continue
+                    # try:
+                    #     self.agentlist.remove(a)
+                    # except ValueError:
+                    #     continue
+                    k = np.random.randint(0,len(self.countries_dict))
+                    self.add_agents(list(self.countries_dict.keys())[k])
 
             for c in self.destinations: # collect community network strength info 
                 df = pd.DataFrame({k: v/sum(self.countries_dict[c].num_of_immigrants.values()) for k, v in self.countries_dict[c].num_of_immigrants.items()}, index=[0]).T

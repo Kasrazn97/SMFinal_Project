@@ -19,6 +19,7 @@ len(set(countries_with_data) - set(destinations))
 assert len([c for c in destinations if c in countries_with_data]) == len(destinations)
 
 row_migration_by_destination = pd.read_csv('row_migration_by_destination.csv')
+row_migration_by_destination.iloc[:, 1:] = row_migration_by_destination.iloc[:, 1:].diff(axis=1)
 row_migration_by_destination_melt = row_migration_by_destination.melt('country_to', var_name='year', value_name='num_of_immigrants')
 row_migration_by_destination_melt = row_migration_by_destination_melt.rename({'country_to': 'country', 'year':'step'}, axis=1)
 row_migration_by_destination_melt.step = row_migration_by_destination_melt.step.map({k:v for k, v in zip(row_migration_by_destination_melt.step.unique(), np.arange(1,32))})
