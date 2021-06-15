@@ -8,7 +8,7 @@ from Country import *
 
 class MigrationModel():
 
-    def __init__(self, data, num_agents=30, policies=False, policy_start_year = 3, policy_countries = ['Sweden']):   # input is a table with all info for countries, columns: 'country', '1', 'gdp', 'life_exp'...
+    def __init__(self, data, num_agents=30, policies=False, policy_start_year = 3, policy_countries = ['Chile']):
 
         self.data = data
         self.countries_dict = {}
@@ -51,12 +51,12 @@ class MigrationModel():
             a.age = 1
         self.agentlist.append(a)
         self.countries_dict[a.home_country].population += 1
-        print(f'{self.agentlist[-1:]} is added, at timestep {a.timestep}')
+        # print(f'{self.agentlist[-1:]} is added, at timestep {a.timestep}')
 
     def initialize_countries(self):
 
         for country in self.data.country.unique():
-            c = Country(self.data, self.num_agents, country) # self.data is dataframe with all info about countries
+            c = Country(self.data, self.num_agents, country)
             self.countries_dict[country] = c
 
     def run(self, EPOCHS=30):
@@ -65,7 +65,7 @@ class MigrationModel():
         self.initialize_agents()
 
         while self.epoch <= EPOCHS:
-            print(f'Step {self.epoch+1} has started. 13/06')
+            print(f'Step {self.epoch+1} has started.')
             print(f'number of agents at step {self.epoch}:', len(self.agentlist))
 
             for c in self.countries_dict.values():
@@ -79,7 +79,6 @@ class MigrationModel():
                         self.countries_dict[c].community_network = pd.concat([self.countries_dict[c].community_network, df], axis=1)
             
             for a in self.agentlist:
-                # print(len(self.agentlist))
                 a.step()
                 self.agents_report = self.agents_report.append(a.reporter(), ignore_index=True)
                 if a.unmoved == False:
@@ -105,8 +104,6 @@ class MigrationModel():
                 for a in range(c.new_agent):
                     self.add_agents(c._name)
                 c.new_agent = 0
-                    # k = np.random.randint(0,len(self.countries_dict))
-                    # self.add_agents(list(self.countries_dict.keys())[k])
 
             if self.epoch == EPOCHS:
                 for c in self.countries_dict.values():

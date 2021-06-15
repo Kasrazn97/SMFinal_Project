@@ -9,7 +9,7 @@ import numpy as np
 
 class Country():
 
-    def __init__(self, data, num_agents, country_name): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'life_exp'...
+    def __init__(self, data, num_agents, country_name): # input is a table with all info for a country, columns: 'country', '1', 'gdp', 'co2'...
         
         self.data = data
         self.data_diff = pd.DataFrame()
@@ -36,9 +36,9 @@ class Country():
         Returns the differences of all indicators of a given country and of all others
         """
         self.data_diff = pd.DataFrame()
-        if (self.timestep == 2)&(self._name == 'Bolivia'):
+        if (self.timestep == 2)&(self._name == 'Iraq'):
             self.keep_brains()
-            print('Policies in place')
+            print('Restrictions introduced')
         data = self.data[self.data['year'] == self.timestep]
         for c in self.destinations:
             df = pd.DataFrame(data[data['country'] == c].iloc[0,1:] - data[data['country'] == self._name].iloc[0,1:]).T
@@ -64,7 +64,7 @@ class Country():
             self.prob.append(p)
 
     def __repr__(self): 
-        """ Print info about agent """
+        """ Print info about the agent """
         return f'{self._name}, number of immigrants: {self.num_of_immigrants}, number of emmigrants:{self.num_of_emmigrants}'
     
     def reporter(self):

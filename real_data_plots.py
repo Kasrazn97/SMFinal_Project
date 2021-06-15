@@ -47,11 +47,11 @@ plot_immigration_flow(top_destinations_df)
 second_choice = ['Denmark', 'Finland', 'Ireland',
         'Netherlands','Portugal', 'Sweden',
         'Switzerland']
-plot_immigration_flow(all_emigrants_high_net_melt[all_emigrants_high_net_melt.country.isin(second_choice_df)])
-
+plot_immigration_flow(all_emigrants_high_net_melt[all_emigrants_high_net_melt.country.isin(second_choice)])
 
 ## THIRD CHOICE COUNTRIES ##
 third_choice = list(set(destinations)-set(top_destinations)-set(second_choice))
 plot_immigration_flow(all_emigrants_high_net_melt[all_emigrants_high_net_melt.country.isin(third_choice)])
 
 
+data.country_from.nunique()
