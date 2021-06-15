@@ -23,7 +23,7 @@ def load_data(file_path):
     # data = data[data['year'] != 39]
     return data
 
-data = load_data('df_for_final_sim_137unique.csv')
+data = load_data('data/df_for_final_sim_137unique.csv')
 data.co2 = data.co2 / 10000
 data.gdp = np.log(data.gdp)
 data = data.dropna()
