@@ -32,7 +32,9 @@ def plot_immigration_flow(data):
     ax.spines["right"].set_visible(False)    
     ax.spines["left"].set_visible(False)    
     ax.get_xaxis().tick_bottom()    
-    ax.get_yaxis().tick_left()  
+    ax.get_yaxis().tick_left()
+    data = data.loc[::-1]
+    data.step = data.step[::-1]
 
     plt.title("Immigration flow dynamics of highly educated people", fontsize=17, ha="center") 
 
@@ -43,7 +45,7 @@ def plot_immigration_flow(data):
                             lw=2, 
                     color=colors[i]
                     )
-            y_pos = data[(data['country']==country)&(data.step == STEPS)]['num_of_immigrants']
+            y_pos = data[(data['country']==country)&(data.step == 1)]['num_of_immigrants']
             plt.text(x=STEPS, y=y_pos, s = country, fontsize=14, color=colors[i]) 
 
     plt.xticks(size=14)

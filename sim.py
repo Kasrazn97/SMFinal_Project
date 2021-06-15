@@ -31,7 +31,7 @@ data = data.dropna()
 ## --------------------- RUN SIMULATION ------------------------ ## 
 
 model = MigrationModel(data, policies=True)
-model.run(4)
+model.run(3)
 
 ## --------------------- PLOTS ------------------------------ ##
 
@@ -56,7 +56,8 @@ df1['num_of_emmigrants'] = model.countries_report.num_of_emmigrants.diff(periods
 df1['num_of_immigrants'] = df1['num_of_immigrants'].fillna(0)
 df1['num_of_emmigrants'] = df1['num_of_emmigrants'].fillna(0)
 plot_immigration_flow(df1)
-
+df1 = df1.loc[::-1]
+df1
 
 ## ------------------------- ANALYSIS ------------------------------ ##
 
