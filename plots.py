@@ -79,10 +79,9 @@ def plot_emmigration_flow(data):
     plt.xticks(size=14)
     plt.yticks(size=14)
 
-def country_immigrants_hist(self, data):
+def country_immigrants_hist(data):
         plt.bar(data['step'], data['num_of_emmigrants'])
         
-
-def country_emmigrants_hist(self, data):
+def country_emmigrants_hist(data):
         plt.bar(data['step'], data['num_of_emmigrants'])
 

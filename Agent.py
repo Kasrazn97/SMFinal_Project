@@ -21,7 +21,7 @@ class Agent():
         else:
             self.gender = 1 # male
         self.age = int(np.random.uniform(0,30,1))
-        self.ambition = np.random.random() # declines with age
+        self.ambition = np.random.random() 
         self.unmoved = True
         self.timestep = 0
 
@@ -32,7 +32,7 @@ class Agent():
         else:
             return 0
     
-    def decide_to_move(self, thresh=0.2): # if I do not migrate in the first year then every year prob will descrease
+    def decide_to_move(self, thresh=0.2): 
         if self.willingness_to_move() > thresh:
             return True
         else:
@@ -93,24 +93,6 @@ class Agent():
                     self.unmoved = False
         self.age += 1
         self.timestep += 1
-
-
-
-########--------------- if we decide to add network ---------------##########
-# probability for an edge to exist
-# p = 0.5
-
-# ASSUMPTION: This array contains all desired nodes
-# nodes = [...]
-
-# g = nx.Graph()
-# g.add_nodes_from(nodes)
-
-# for u, v in combinations(g, 2):
-#     if random.random() < p:
-#         g.add_edge(u, v)
-
-# SAVE AND COMMIT 
 
     
 
