@@ -31,24 +31,24 @@ data = data.dropna()
 ## --------------------- RUN SIMULATION ------------------------ ## 
 
 model = MigrationModel(data, policies=True)
-model.run(3)
+model.run(4)
 
 ## --------------------- PLOTS ------------------------------ ##
 
-destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
-        'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
-        'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
-        'Switzerland', 'United Kingdom', 'United States']
-plot_immigration_flow(model.countries_report[model.countries_report.country.isin(destinations)])
+# destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
+#         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
+#         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
+#         'Switzerland', 'United Kingdom', 'United States']
+# plot_immigration_flow(model.countries_report[model.countries_report.country.isin(destinations)])
 
 top_destinations = ['Australia', 'Canada', 'Chile', 'Germany', 'New Zealand','United Kingdom', 'United States']
-plot_immigration_flow(model.countries_report[model.countries_report.country.isin(top_destinations)])
+# plot_immigration_flow(model.countries_report[model.countries_report.country.isin(top_destinations)])
 
-plot_em_countries = ['Angola', 'Argentina', 'Armenia', 'Azerbaijan', 'Bahrain', 'Belarus',
-       'Bolivia', 'Bosnia and Herzegovina', 'Botswana',
-       'Brazil', 'Brunei Darussalam', 'Bulgaria', 'Burkina Faso',
-       'Burundi', 'Cabo Verde', 'Cambodia']
-plot_emmigration_flow(model.countries_report[model.countries_report.country.isin(plot_em_countries)&(model.countries_report.step>0)])
+# plot_em_countries = ['Angola', 'Argentina', 'Armenia', 'Azerbaijan', 'Bahrain', 'Belarus',
+#        'Bolivia', 'Bosnia and Herzegovina', 'Botswana',
+#        'Brazil', 'Brunei Darussalam', 'Bulgaria', 'Burkina Faso',
+#        'Burundi', 'Cabo Verde', 'Cambodia']
+# plot_emmigration_flow(model.countries_report[model.countries_report.country.isin(plot_em_countries)&(model.countries_report.step>0)])
 
 df1 = model.countries_report[model.countries_report.country.isin(top_destinations)]
 df1['num_of_immigrants'] = model.countries_report.num_of_immigrants.diff(periods = 137)
@@ -56,6 +56,7 @@ df1['num_of_emmigrants'] = model.countries_report.num_of_emmigrants.diff(periods
 df1['num_of_immigrants'] = df1['num_of_immigrants'].fillna(0)
 df1['num_of_emmigrants'] = df1['num_of_emmigrants'].fillna(0)
 plot_immigration_flow(df1)
+
 
 ## ------------------------- ANALYSIS ------------------------------ ##
 
@@ -90,3 +91,5 @@ model.get_country_stats('Austria')
 
 # most popular destinations at each step
 model.countries_report.groupby(['step', 'country'])['num_of_immigrants'].sum().sort_values(ascending=False)[:50]
+
+

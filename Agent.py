@@ -26,13 +26,13 @@ class Agent():
         self.timestep = 0
 
     def willingness_to_move(self):
-        alpha1, alpha2, alpha3 = 0.01, 0.5, 0.02
+        alpha1, alpha2, alpha3 = 0.08, 0.2, 0.2
         if self.age <= 30:
             return self.ambition + alpha1**self.gender*self.ambition - alpha2*self.ambition*self.age/30 - alpha3*self.countries_dict[self.home_country].restrictions
         else:
             return 0
     
-    def decide_to_move(self, thresh=0.2): 
+    def decide_to_move(self, thresh=0.5):
         if self.willingness_to_move() > thresh:
             return True
         else:
@@ -46,7 +46,7 @@ class Agent():
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
-        NAcoef = 10
+        NAcoef = 7
 
         p = np.array(self.country.prob)
         network_abroad = []
@@ -57,7 +57,7 @@ class Agent():
                     network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/sum(self.countries_dict[c].num_of_immigrants.values()))
                 else:
                     network_abroad.append(0)
-            print('network abroad', network_abroad)
+            # print('network abroad', network_abroad)
         else:
             network_abroad = np.zeros(len(p))
 
