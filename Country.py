@@ -19,7 +19,7 @@ class Country():
         self._name = country_name
         self.timestep = 0
         self.prob = list() # probability of being chosen as a distination
-        self.benefits = 0
+        self.restrictions = 0
         self.destinations = ['Australia', 'Austria', 'Canada', 'Chile', 'Denmark', 'Finland',
         'France', 'Germany', 'Greece', 'Ireland', 'Luxembourg',
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
@@ -29,15 +29,14 @@ class Country():
         self.new_agent = 0
 
     def keep_brains(self):
-        self.benefits += 1
+        self.restrictions += 1
             
     def get_data_diff(self):
         """
         Returns the differences of all indicators of a given country and of all others
         """
-
         self.data_diff = pd.DataFrame()
-        if (self.timestep == 2)&(self._name == 'Sweden'):
+        if (self.timestep == 2)&(self._name == 'Bolivia'):
             self.keep_brains()
             print('Policies in place')
         data = self.data[self.data['year'] == self.timestep]
@@ -54,14 +53,6 @@ class Country():
         For a given country returns probabilities to go to other countries at step t
         """
         self.prob = []
-
-# Intercept    1.679889e-02
-# co2          1.159363e-07
-# expRD        1.323871e-03
-# expEd       -6.152302e-04
-# expHealth   -5.340156e-04
-# gdp         -1.130067e-14
-
         betas = np.array([1.679889e-02, -1.159363e-07, 1.323871e-03, 6.152302e-04, 5.340156e-04, 1.130067e-7]) # we will only define them here (they are set, unchangable values)
         denominator = 0
         for i in range(len(self.data_diff)):
@@ -73,9 +64,13 @@ class Country():
             self.prob.append(p)
 
     def __repr__(self): 
+        """ Print info about agent """
         return f'{self._name}, number of immigrants: {self.num_of_immigrants}, number of emmigrants:{self.num_of_emmigrants}'
     
     def reporter(self):
+        """
+        Collects data about a country at each step
+        """
         values = self.timestep, self._name, sum(self.num_of_immigrants.values()), sum(self.num_of_emmigrants.values()), self.population
         df = pd.DataFrame(values, index=None).T
         df.columns = ['step', 'country', 'num_of_immigrants', 'num_of_emmigrants', 'population']

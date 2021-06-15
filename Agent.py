@@ -26,9 +26,9 @@ class Agent():
         self.timestep = 0
 
     def willingness_to_move(self):
-        alpha1 = 0.01
+        alpha1, alpha2, alpha3 = 0.01, 0.5, 0.02
         if self.age <= 30:
-            return self.ambition + alpha1**self.gender*self.ambition - self.ambition*self.age/30
+            return self.ambition + alpha1**self.gender*self.ambition - alpha2*self.ambition*self.age/30 - alpha3*self.countries_dict[self.home_country].restrictions
         else:
             return 0
     
@@ -47,25 +47,21 @@ class Agent():
         'Netherlands', 'New Zealand', 'Norway', 'Portugal', 'Sweden',
         'Switzerland', 'United Kingdom', 'United States']
         NAcoef = 10
-        BenefitCoef = 0.2
 
         p = np.array(self.country.prob)
         network_abroad = []
-        benefits = []
 
         if self.timestep > 0:
             for c in destinations: # compute the share of immigrants from my country as a share of all immigrants in the destination country 
-                benefits.append(self.countries_dict[c].benefits) # store benefits of each country
                 if sum(self.countries_dict[c].num_of_immigrants.values()) > 0:
                     network_abroad.append(self.countries_dict[c].num_of_immigrants[self.country._name]/sum(self.countries_dict[c].num_of_immigrants.values()))
                 else:
                     network_abroad.append(0)
-            # print('network abroad', network_abroad)
+            print('network abroad', network_abroad)
         else:
             network_abroad = np.zeros(len(p))
-            benefits = np.zeros(len(p))
 
-        p = p + NAcoef*np.array(network_abroad) + BenefitCoef*np.array(benefits)*p
+        p = p + NAcoef*np.array(network_abroad)
         p_scaled = p / p.sum()
         p_cumsum = p_scaled.cumsum()
         r = np.random.uniform(0,1,1)
@@ -80,6 +76,9 @@ class Agent():
         return f'Agent {self.id}, {gender}, {self.age} years old, from {self.home_country}.'
 
     def reporter(self):
+        """
+        Collects data about an agent at each step
+        """
         values = [self.timestep, self.id, self.age, self.ambition, self.home_country, self.country._name, self.unmoved, self.willingness_to_move()]
         df = pd.DataFrame(columns = ['step', 'agent', 'age', 'ambition', 'home_country', 'country', 'status', 'willingness_to_move'])
         df.loc[0] = values

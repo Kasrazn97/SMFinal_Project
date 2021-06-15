@@ -5,7 +5,6 @@ This module runs the simulation.
 
 import pandas as pd
 import numpy as np
-from sklearn.preprocessing import MinMaxScaler
 
 from Agent import *
 from Country import *
@@ -29,20 +28,15 @@ def load_data(file_path):
     # df = pd.concat([data['country'], df, data['year']], axis=1)
     return data
 
-# data = load_data('all_data.csv')
-# data.drop('y', axis=1, inplace=True)
 data = load_data('df_for_final_sim_137unique.csv')
-# data.country.nunique()
-# data.year = data.year.map({k:v for k, v in zip(data.year.unique(), np.arange(40))})
-# data = data[data['year'] != 39]
 data.co2 = data.co2 / 10000
 data.gdp = np.log(data.gdp)
 data = data.dropna()
 
 ## --------------------- 1ST RUN ------------------------------ ##
 
-model = MigrationModel(data)
-model.run(4, policies=False)
+model = MigrationModel(data, policies=False)
+model.run(4)
 
 ## --------------------- PLOTS ------------------------------ ##
 
@@ -104,7 +98,7 @@ model.countries_report.groupby('step')['num_of_immigrants'].sum().diff()
 model.countries_report.groupby('step')['num_of_emmigrants'].sum().diff()
 model.countries_report['num_of_emmigrants'].sum()
 
-
+model.countries_report.groupby(['country'])['num_of_emmigrants'].sum().sort_values(ascending=False)[:50]
 # average population in sender countries 
 for col in ['step', 'num_of_immigrants', 'num_of_emmigrants', 'population']:
     model.countries_report[col] =  model.countries_report[col].astype('int64')

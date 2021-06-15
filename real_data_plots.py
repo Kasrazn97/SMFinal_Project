@@ -19,11 +19,14 @@ len(set(countries_with_data) - set(destinations))
 assert len([c for c in destinations if c in countries_with_data]) == len(destinations)
 
 row_migration_by_destination = pd.read_csv('row_migration_by_destination.csv')
-row_migration_by_destination.iloc[:, 1:] = row_migration_by_destination.iloc[:, 1:].diff(axis=1)
+# row_migration_by_destination.iloc[:, 1:] = row_migration_by_destination.iloc[:, 1:].diff(axis=1)
 row_migration_by_destination_melt = row_migration_by_destination.melt('country_to', var_name='year', value_name='num_of_immigrants')
 row_migration_by_destination_melt = row_migration_by_destination_melt.rename({'country_to': 'country', 'year':'step'}, axis=1)
 row_migration_by_destination_melt.step = row_migration_by_destination_melt.step.map({k:v for k, v in zip(row_migration_by_destination_melt.step.unique(), np.arange(1,32))})
 plot_immigration_flow(row_migration_by_destination_melt[~row_migration_by_destination_melt.country.isin(['United States', 'Canada', 'United Kingdom'])])
+
+row_migration_by_destination_melt.step.nunique()
+row_migration_by_destination_melt[~row_migration_by_destination_melt.country.isin(['United States', 'Canada', 'United Kingdom'])]
 
 
 all_emigrants_high_net = pd.read_csv('data/all_emigrants_high_net.csv')
@@ -40,16 +43,15 @@ top_destinations = ['Australia', 'Canada', 'Chile', 'Germany', 'New Zealand','Un
 top_destinations_df = all_emigrants_high_net_melt[all_emigrants_high_net_melt.country.isin(top_destinations)]
 plot_immigration_flow(top_destinations_df)
 
-
-
 ## SECONDARY CHOICE COUNTRIES ##
-second_choice_df = ['Denmark', 'Finland', 'Ireland',
+second_choice = ['Denmark', 'Finland', 'Ireland',
         'Netherlands','Portugal', 'Sweden',
         'Switzerland']
-plot_immigration_flow(all_emigrants_high_net_melt[~all_emigrants_high_net_melt.country.isin(top_destinations)])
+plot_immigration_flow(all_emigrants_high_net_melt[all_emigrants_high_net_melt.country.isin(second_choice_df)])
 
 
+## THIRD CHOICE COUNTRIES ##
+third_choice = list(set(destinations)-set(top_destinations)-set(second_choice))
+plot_immigration_flow(all_emigrants_high_net_melt[all_emigrants_high_net_melt.country.isin(third_choice)])
 
-row_migration_by_destination_melt.step.nunique()
-row_migration_by_destination_melt[~row_migration_by_destination_melt.country.isin(['United States', 'Canada', 'United Kingdom'])]
 
